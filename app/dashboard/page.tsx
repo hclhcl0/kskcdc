@@ -6,8 +6,8 @@ import ProgressTable from '@/components/dashboard/ProgressTable';
 import { Activity, FileCheck, Building2, RefreshCw, Target } from 'lucide-react';
 import Link from 'next/link';
 
-// Revalidate every 30 seconds
-export const revalidate = 30;
+// Force dynamic rendering to prevent prerender timeout during build
+export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
   const stats = await getDashboardStats();
