@@ -56,6 +56,7 @@ export default function Navbar() {
     : 'bg-blue-100 text-blue-700';
 
   return (
+    <>
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -269,11 +270,12 @@ export default function Navbar() {
           onClick={() => setUserMenuOpen(false)}
         />
       )}
-
-      <ChangePasswordModal
-        isOpen={passwordModalOpen}
-        onClose={() => setPasswordModalOpen(false)}
-      />
     </header>
+
+    <ChangePasswordModal
+      isOpen={passwordModalOpen}
+      onClose={() => setPasswordModalOpen(false)}
+    />
+    </>
   );
 }
