@@ -32,11 +32,14 @@ export default auth((req) => {
 
   const role = (session.user as { role?: string })?.role;
 
-  // Chỉ admin được xem dashboard và accounts
+  // Chỉ admin được xem dashboard, accounts, benchmarks
   if (pathname.startsWith('/dashboard') && role !== 'admin') {
     return NextResponse.redirect(new URL('/submit-report', req.url));
   }
   if (pathname.startsWith('/accounts') && role !== 'admin') {
+    return NextResponse.redirect(new URL('/submit-report', req.url));
+  }
+  if (pathname.startsWith('/benchmarks') && role !== 'admin') {
     return NextResponse.redirect(new URL('/submit-report', req.url));
   }
 

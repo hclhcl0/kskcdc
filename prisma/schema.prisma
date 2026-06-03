@@ -34,6 +34,19 @@ model HealthReport {
   created_at         DateTime @default(now())
 }
 
+model Benchmark {
+  id                 String   @id @default(cuid())
+  don_vi             String   @unique
+  nguoi_cao_tuoi     Int?
+  nguoi_khuyet_tat   Int?
+  ho_ngheo           Int?
+  ho_can_ngheo       Int?
+  nguoi_co_cong      Int?
+  vung_kho_khan      Int?
+  tre_em_duoi_6_tuoi Int?
+  updatedAt          DateTime @updatedAt
+}
+
 model Vaccine {
   id          String   @id @default(cuid())
   name        String

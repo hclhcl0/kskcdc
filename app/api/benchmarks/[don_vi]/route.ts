@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { updateBenchmark } from '@/lib/benchmarks';
+import { upsertBenchmark } from '@/lib/benchmarks_db';
 import { auth } from '@/lib/auth';
 
 export async function PUT(
@@ -9,26 +9,30 @@ export async function PUT(
   try {
     const { don_vi: encodedDonVi } = await context.params;
     const session = await auth();
-    // Chặn nếu không phải admin
     if (!session || (session.user as any).role !== 'admin') {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
     }
 
     const don_vi = decodeURIComponent(encodedDonVi);
     const body = await request.json();
-    
-    // updateBenchmark mong đợi các thuộc tính số hoặc null
-    const updated = updateBenchmark(don_vi, body);
 
-    if (!updated) {
-      return NextResponse.json(
-        { success: false, error: 'Không tìm thấy đơn vị báo cáo' },
-        { status: 404 }
-      );
+    // Parse values: empty string or null → null, else parseInt
+    const parsed: Record<string, number | null> = {};
+    const fields = ['nguoi_cao_tuoi', 'nguoi_khuyet_tat', 'ho_ngheo', 'ho_can_ngheo', 'nguoi_co_cong', 'vung_kho_khan', 'tre_em_duoi_6_tuoi'];
+    for (const f of fields) {
+      const v = body[f];
+      if (v === null || v === '' || v === undefined) {
+        parsed[f] = null;
+      } else {
+        const n = parseInt(String(v).replace(/[.,\s]/g, ''), 10);
+        parsed[f] = isNaN(n) ? null : n;
+      }
     }
 
+    const updated = await upsertBenchmark(don_vi, parsed);
     return NextResponse.json({ success: true, data: updated });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { success: false, error: 'Không thể cập nhật chỉ tiêu' },
       { status: 500 }

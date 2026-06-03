@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Activity, LayoutDashboard, FileText, Menu, X, LogOut, ChevronDown, Users } from 'lucide-react';
+import { Activity, LayoutDashboard, FileText, Menu, X, LogOut, ChevronDown, Users, Target } from 'lucide-react';
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import ChangePasswordModal from '@/components/auth/ChangePasswordModal';
@@ -14,6 +14,7 @@ const navLinks = [
   { href: '/vaccination/submit', label: 'Báo cáo Tiêm chủng', icon: FileText, unitOnly: true },
   { href: '/vaccination/campaigns', label: 'Quản lý Đợt tiêm', icon: LayoutDashboard, adminOnly: true },
   { href: '/history',        label: 'Lịch sử báo cáo',    icon: FileText },
+  { href: '/benchmarks',     label: 'Chỉ tiêu',           icon: Target,          adminOnly: true },
   { href: '/accounts',       label: 'Tài khoản',          icon: Users,           adminOnly: true },
 ];
 
