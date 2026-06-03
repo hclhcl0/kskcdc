@@ -30,10 +30,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const { data: session } = useSession();
-  const adminMenuRef = useRef<HTMLDivElement>(null);
 
   const role = (session?.user as { role?: string })?.role;
   const displayName = session?.user?.name ?? '';
@@ -45,17 +43,6 @@ export default function Navbar() {
   });
 
   const isAdminActive = adminMenuLinks.some((l) => pathname === l.href || pathname.startsWith(l.href));
-
-  // Đóng admin dropdown khi click ra ngoài
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (adminMenuRef.current && !adminMenuRef.current.contains(e.target as Node)) {
-        setAdminMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: '/login' });
@@ -106,49 +93,6 @@ export default function Navbar() {
                 );
               })}
 
-              {/* Admin dropdown */}
-              {(role === 'admin' || role === 'admin_cdc') && (
-                <div className="relative" ref={adminMenuRef}>
-                  <button
-                    onClick={() => setAdminMenuOpen((v) => !v)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      isAdminActive || adminMenuOpen
-                        ? 'bg-amber-50 text-amber-700'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
-                  >
-                    <Settings className="w-4 h-4" />
-                    Quản trị
-                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${adminMenuOpen ? 'rotate-180' : ''}`} />
-                  </button>
-
-                  {adminMenuOpen && (
-                    <div className="absolute left-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-lg border border-slate-100 py-2 z-50 animate-fade-in">
-                      <p className="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        Quản trị hệ thống
-                      </p>
-                      {adminMenuLinks.map(({ href, label, icon: Icon }) => {
-                        const isActive = pathname === href || pathname.startsWith(href);
-                        return (
-                          <Link
-                            key={href}
-                            href={href}
-                            onClick={() => setAdminMenuOpen(false)}
-                            className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
-                              isActive
-                                ? 'bg-amber-50 text-amber-700 font-semibold'
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                            }`}
-                          >
-                            <Icon className="w-4 h-4" />
-                            {label}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
             </nav>
 
             {/* User menu (desktop) */}
@@ -180,6 +124,33 @@ export default function Navbar() {
                         {(session.user as { username?: string })?.username}
                       </p>
                     </div>
+
+                    {(role === 'admin' || role === 'admin_cdc') && (
+                      <div className="py-1 border-b border-slate-100 mb-1">
+                        <p className="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                          Quản trị hệ thống
+                        </p>
+                        {adminMenuLinks.map(({ href, label, icon: Icon }) => {
+                          const isActive = pathname === href || pathname.startsWith(href);
+                          return (
+                            <Link
+                              key={href}
+                              href={href}
+                              onClick={() => setUserMenuOpen(false)}
+                              className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
+                                isActive
+                                  ? 'bg-blue-50 text-blue-700 font-semibold'
+                                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                              }`}
+                            >
+                              <Icon className="w-4 h-4" />
+                              {label}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+
                     <button
                       onClick={() => { setUserMenuOpen(false); setPasswordModalOpen(true); }}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
@@ -292,10 +263,10 @@ export default function Navbar() {
       )}
 
       {/* Backdrops */}
-      {(userMenuOpen || adminMenuOpen) && (
+      {userMenuOpen && (
         <div
           className="fixed inset-0 z-40"
-          onClick={() => { setUserMenuOpen(false); setAdminMenuOpen(false); }}
+          onClick={() => setUserMenuOpen(false)}
         />
       )}
 
