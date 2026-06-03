@@ -77,9 +77,19 @@ export default function UserModal({ isOpen, onClose, user, onSaved }: UserModalP
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
-        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose} />
+      
+      <div 
+        className="flex min-h-full items-center justify-center p-4"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+        {/* Modal */}
+        <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col z-10 animate-in fade-in zoom-in-95 duration-200">
+          <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
           <h2 className="text-lg font-bold text-slate-800">
             {user ? 'Chỉnh sửa tài khoản' : 'Thêm tài khoản mới'}
           </h2>
@@ -162,5 +172,6 @@ export default function UserModal({ isOpen, onClose, user, onSaved }: UserModalP
         </form>
       </div>
     </div>
-  );
+  </div>
+);
 }

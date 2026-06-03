@@ -61,8 +61,18 @@ export default function EditReportModal({ isOpen, onClose, report, type, onSaved
   const dateField = type === 'health' ? 'ngay_kham' : 'ngay_tiem';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose} />
+      
+      <div 
+        className="flex min-h-full items-center justify-center p-4"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+        {/* Modal */}
+        <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] z-10 animate-in fade-in zoom-in-95 duration-200">
         <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
           <h2 className="text-lg font-bold text-slate-800">Sửa báo cáo</h2>
           <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition-colors">
@@ -123,5 +133,6 @@ export default function EditReportModal({ isOpen, onClose, report, type, onSaved
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
