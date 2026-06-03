@@ -17,12 +17,14 @@ export default function VaccinationDashboard() {
     fetch('/api/vaccination/dashboard')
       .then(r => r.json())
       .then(data => {
-        setCampaigns(data.campaigns);
-        if (data.campaigns.length > 0) {
-          setSelectedCampaign(data.campaigns[0].id);
+        const list = data.campaigns ?? [];
+        setCampaigns(list);
+        if (list.length > 0) {
+          setSelectedCampaign(list[0].id);
         }
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -42,6 +44,16 @@ export default function VaccinationDashboard() {
   };
 
   if (loading) return <div className="p-8 text-center mt-20">Đang tải dữ liệu...</div>;
+
+  if (campaigns.length === 0) return (
+    <div className="max-w-2xl mx-auto px-4 py-24 text-center">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10">
+        <Activity className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+        <h2 className="text-xl font-bold text-slate-700 mb-2">Chưa có chiến dịch tiêm chủng</h2>
+        <p className="text-slate-500 text-sm">Admin cần tạo ít nhất một chiến dịch tiêm chủng trước khi xem tiến độ.</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16 animate-in fade-in zoom-in-95 duration-300">
@@ -112,7 +124,7 @@ export default function VaccinationDashboard() {
                     <h3 className="text-sm font-semibold text-slate-600">Tỷ lệ hoàn thành</h3>
                   </div>
                   <p className="text-3xl font-bold text-amber-600">
-                    {((vp.totalAdministered / vp.totalAllocated) * 100).toFixed(1)}%
+                    {vp.totalAllocated > 0 ? ((vp.totalAdministered / vp.totalAllocated) * 100).toFixed(1) : '0.0'}%
                   </p>
                 </div>
               </div>
@@ -120,9 +132,9 @@ export default function VaccinationDashboard() {
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                  <div className="w-full bg-slate-100 rounded-full h-4 mb-2 overflow-hidden">
                    <div 
-                     className="bg-indigo-600 h-4 rounded-full transition-all duration-1000" 
-                     style={{ width: `${Math.min(100, (vp.totalAdministered / vp.totalAllocated) * 100)}%` }}
-                   ></div>
+                      className="bg-indigo-600 h-4 rounded-full transition-all duration-1000" 
+                      style={{ width: `${vp.totalAllocated > 0 ? Math.min(100, (vp.totalAdministered / vp.totalAllocated) * 100) : 0}%` }}
+                    ></div>
                  </div>
                  <div className="flex justify-between text-xs text-slate-500 font-medium px-1">
                    <span>0</span>
