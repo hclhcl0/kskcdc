@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getVaccinationReports, addVaccinationReport } from '@/lib/vaccination_data';
 import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,10 +24,24 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     
+    const role = (session.user as any)?.role;
+    const isAdmin = role === 'admin' || role === 'admin_cdc';
+    const don_vi = body.don_vi || session.user.name || 'Unknown';
+    const { ngay_tiem, vaccineId, campaignId } = body;
+
+    if (!isAdmin) {
+      const existing = await prisma.vaccinationReport.findFirst({
+        where: { don_vi, ngay_tiem, vaccineId, campaignId }
+      });
+      if (existing) {
+        return NextResponse.json({ error: `Đơn vị "${don_vi}" đã nộp báo cáo cho vắc xin này ngày ${ngay_tiem}. Mỗi đơn vị chỉ được nộp 1 báo cáo/ngày cho mỗi loại vắc xin.` }, { status: 409 });
+      }
+    }
+
     // Add report
     const newReport = await addVaccinationReport({
       ...body,
-      don_vi: body.don_vi || session.user.name || 'Unknown'
+      don_vi
     });
 
     return NextResponse.json(newReport, { status: 201 });
