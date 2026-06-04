@@ -93,7 +93,12 @@ export default function SubmitVaccinationPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
-      if (!res.ok) throw new Error('Failed to submit');
+      
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Lỗi hệ thống khi nộp báo cáo');
+      }
+      
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
       
@@ -102,8 +107,8 @@ export default function SubmitVaccinationPage() {
         ...prev,
         ...Object.fromEntries(GROUP_DEFINITIONS.map(g => [g.key, 0]))
       }));
-    } catch (err) {
-      setError('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+    } catch (err: any) {
+      setError(err.message || 'Đã có lỗi xảy ra. Vui lòng thử lại sau.');
     }
     setSubmitting(false);
   };
