@@ -7,7 +7,7 @@ export default function Footer() {
           &copy; {year} Bản quyền thuộc về <span className="font-bold text-blue-700">Trung tâm Kiểm soát bệnh tật (CDC) Thành phố Đà Nẵng</span>
         </p>
         <p className="text-xs text-slate-500">
-          Hệ thống Báo cáo Khám Sức khỏe Toàn dân & Tiến độ Tiêm chủng
+          Hệ thống Báo cáo nhanh Khám Sức khỏe Toàn dân
         </p>
       </div>
     </footer>
