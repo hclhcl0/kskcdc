@@ -28,6 +28,27 @@ export default function LoginPage() {
 
     startTransition(async () => {
       try {
+        // Kiểm tra trạng thái trước khi login để tránh NextAuth nuốt lỗi
+        try {
+          const statusRes = await fetch('/api/auth/check-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username.trim() }),
+          });
+          if (statusRes.ok) {
+            const statusData = await statusRes.json();
+            if (statusData.status === 'pending') {
+              setError('Tài khoản đang chờ Quản trị viên phê duyệt');
+              return;
+            }
+            if (statusData.status === 'rejected') {
+              setError('Tài khoản đã bị từ chối');
+              return;
+            }
+          }
+        } catch (e) {
+          // Bỏ qua lỗi fetch và tiếp tục signIn
+        }
         const result = await signIn('credentials', {
           username: username.trim(),
           password: password.trim(),

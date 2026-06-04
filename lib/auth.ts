@@ -27,7 +27,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (password !== account.password) return null;
 
         if (account.status && account.status !== 'approved') {
-          throw new Error(account.status === 'pending' ? 'Tài khoản đang chờ duyệt' : 'Tài khoản đã bị từ chối');
+          const msg = account.status === 'pending' ? 'Tài khoản đang chờ duyệt' : 'Tài khoản đã bị từ chối';
+          throw new CredentialsSignin(msg);
         }
 
         return {
