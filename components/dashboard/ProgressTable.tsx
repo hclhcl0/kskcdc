@@ -201,14 +201,30 @@ export default function ProgressTable({ data }: ProgressTableProps) {
         </div>
       )}
 
-      {/* Top Pagination Info */}
+      {/* Top Pagination Controls */}
       {totalPages > 1 && (
-        <div className="px-5 py-3 bg-white border-b border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-          <p>
-            Đang hiển thị <strong>{(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredUnits.length)}</strong> trên tổng số <strong>{filteredUnits.length}</strong> đơn vị
+        <div className="px-5 py-3 bg-white border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+          <p className="text-sm text-slate-500">
+            Hiển thị <span className="font-semibold text-slate-700">{(currentPage - 1) * itemsPerPage + 1}</span> đến <span className="font-semibold text-slate-700">{Math.min(currentPage * itemsPerPage, filteredUnits.length)}</span> trong tổng số <span className="font-semibold text-slate-700">{filteredUnits.length}</span> đơn vị
           </p>
-          <div className="flex items-center gap-1 font-medium bg-slate-50 px-2 py-1 rounded-md border border-slate-200">
-             Trang <span className="text-slate-800">{currentPage}</span> / {totalPages}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <span className="text-sm font-medium text-slate-700 px-2 min-w-[5rem] text-center">
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
       )}
