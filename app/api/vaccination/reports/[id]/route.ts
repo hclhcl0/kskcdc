@@ -21,10 +21,12 @@ export async function DELETE(
       if (report.don_vi !== session.user?.name) {
         return NextResponse.json({ success: false, error: 'Không có quyền xóa báo cáo của đơn vị khác.' }, { status: 403 });
       }
-      const reportDate = new Date(report.created_at);
-      const diffDays = (Date.now() - reportDate.getTime()) / (1000 * 60 * 60 * 24);
-      if (diffDays > 7) {
-        return NextResponse.json({ success: false, error: 'Báo cáo đã quá 7 ngày, không thể xóa. Vui lòng liên hệ Admin.' }, { status: 403 });
+      const reportDay = new Date(report.created_at).toISOString().split('T')[0];
+      const deadline = new Date(reportDay);
+      deadline.setDate(deadline.getDate() + 1);
+      const todayDay = new Date().toISOString().split('T')[0];
+      if (todayDay > deadline.toISOString().split('T')[0]) {
+        return NextResponse.json({ success: false, error: 'Báo cáo đã quá hạn chỉnh sửa (hết ngày hôm sau). Vui lòng liên hệ Admin.' }, { status: 403 });
       }
     }
 
@@ -58,10 +60,12 @@ export async function PUT(
     }
 
     if (role === 'unit') {
-      const reportDate = new Date(report.created_at);
-      const diffDays = (Date.now() - reportDate.getTime()) / (1000 * 60 * 60 * 24);
-      if (diffDays > 7) {
-        return NextResponse.json({ success: false, error: 'Báo cáo đã quá 7 ngày, không thể sửa. Vui lòng liên hệ Admin.' }, { status: 403 });
+      const reportDay = new Date(report.created_at).toISOString().split('T')[0];
+      const deadline = new Date(reportDay);
+      deadline.setDate(deadline.getDate() + 1);
+      const todayDay = new Date().toISOString().split('T')[0];
+      if (todayDay > deadline.toISOString().split('T')[0]) {
+        return NextResponse.json({ success: false, error: 'Báo cáo đã quá hạn chỉnh sửa (hết ngày hôm sau). Vui lòng liên hệ Admin.' }, { status: 403 });
       }
       if (report.don_vi !== session.user?.name) {
         return NextResponse.json({ success: false, error: 'Không có quyền sửa báo cáo của đơn vị khác.' }, { status: 403 });

@@ -82,9 +82,11 @@ export default function HistoryPage() {
 
   const isEditable = (report: HealthReport | VaccinationReport) => {
     if (isAdmin) return true;
-    const reportDate = new Date(report.created_at);
-    const diffDays = (Date.now() - reportDate.getTime()) / (1000 * 60 * 60 * 24);
-    return diffDays <= 7;
+    const reportDay = new Date(report.created_at).toISOString().split('T')[0];
+    const deadline = new Date(reportDay);
+    deadline.setDate(deadline.getDate() + 1);
+    const todayDay = new Date().toISOString().split('T')[0];
+    return todayDay <= deadline.toISOString().split('T')[0];
   };
 
   const getFilteredHealthReports = () => {
