@@ -88,7 +88,7 @@ export default async function BenchmarksPage() {
                   * Hệ thống tự nhận diện tên cột
                 </p>
                 <a 
-                  href="/templates/mau_chi_tieu.xlsx" 
+                  href="/api/templates/benchmarks" 
                   download 
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md transition-colors"
                 >
