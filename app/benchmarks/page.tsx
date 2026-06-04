@@ -82,9 +82,20 @@ export default async function BenchmarksPage() {
                 <p>Cột H: Hộ cận nghèo</p>
                 <p>Cột I: Vùng khó khăn/DTTS</p>
               </div>
-              <p className="text-xs text-slate-400 mt-2 italic">
-                * Hệ thống tự nhận diện tên cột, không cần đúng thứ tự tuyệt đối
-              </p>
+              
+              <div className="mt-3 flex items-center justify-between">
+                <p className="text-xs text-slate-400 italic">
+                  * Hệ thống tự nhận diện tên cột
+                </p>
+                <a 
+                  href="/templates/mau_chi_tieu.xlsx" 
+                  download 
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md transition-colors"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  Tải file mẫu
+                </a>
+              </div>
             </div>
           </div>
         </div>
