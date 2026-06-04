@@ -10,7 +10,7 @@ export default auth((req) => {
   const session = req.auth;
 
   // Public routes - không cần đăng nhập
-  const publicRoutes = ['/login'];
+  const publicRoutes = ['/login', '/register'];
   if (publicRoutes.includes(pathname)) {
     // Nếu đã đăng nhập, redirect về trang phù hợp
     if (session) {
