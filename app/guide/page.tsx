@@ -226,6 +226,7 @@ export default function GuidePage() {
             <ul className="list-disc pl-5 text-slate-600 space-y-2 text-sm leading-relaxed">
               <li><strong>Duyệt tài khoản mới:</strong> Xem danh sách các đơn vị mới đăng ký (trạng thái "Chờ duyệt") và thao tác Duyệt hoặc Từ chối.</li>
               <li><strong>Tạo tài khoản mới:</strong> Nhập tên đăng nhập, tên đơn vị, mật khẩu và phân quyền (Đơn vị / Admin).</li>
+              <li><strong>Cấp đối tượng khám:</strong> Nhấn nút <strong>🎯 Cấp đối tượng</strong> để chọn và cấp riêng các nhóm đối tượng tùy chỉnh cho từng Trạm Y tế.</li>
               <li><strong>Quản lý:</strong> Đổi thông tin tài khoản, Reset mật khẩu cho đơn vị quên mật khẩu. Admin có thể trực tiếp theo dõi tiến độ của đơn vị từ Dashboard riêng của đơn vị đó.</li>
               <li><strong>Xóa tài khoản:</strong> Xóa tài khoản không còn sử dụng (trừ tài khoản <code>admin</code> chính).</li>
             </ul>
