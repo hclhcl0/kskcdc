@@ -27,6 +27,16 @@ export default function RegisterPage() {
       return;
     }
 
+    if (formData.username.trim().length < 4) {
+      setError('Tên đăng nhập phải có ít nhất 4 ký tự');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Mật khẩu phải có ít nhất 6 ký tự');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const res = await fetch('/api/auth/register', {
@@ -106,7 +116,6 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type="text"
-                  required
                   value={formData.displayName}
                   onChange={(e) => setFormData({...formData, displayName: e.target.value})}
                   placeholder="VD: Trường ĐH Bách Khoa ĐN"
@@ -139,8 +148,6 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type="text"
-                  required
-                  minLength={4}
                   value={formData.username}
                   onChange={(e) => setFormData({...formData, username: e.target.value})}
                   placeholder="VD: dhbkhdn (viết liền không dấu)"
@@ -158,8 +165,6 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type="password"
-                  required
-                  minLength={6}
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
                   placeholder="Ít nhất 6 ký tự"
