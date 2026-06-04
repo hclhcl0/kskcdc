@@ -176,7 +176,7 @@ export default function LoginPage() {
 
           {/* Help text */}
           <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col gap-3">
-            <Link 
+            <a 
               href="/register"
               className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl
                 bg-blue-50 hover:bg-blue-100 active:bg-blue-200
@@ -185,7 +185,7 @@ export default function LoginPage() {
             >
               <UserPlus className="w-4 h-4" />
               Đăng ký tài khoản tổ chức mới
-            </Link>
+            </a>
             <p className="text-xs text-slate-400 text-center leading-relaxed mt-2">
               Quên mật khẩu? Liên hệ bộ phận kế hoạch – nghiệp vụ CDC để được hỗ trợ
             </p>
