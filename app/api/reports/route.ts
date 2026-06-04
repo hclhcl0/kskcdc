@@ -6,6 +6,8 @@ import { HealthReport } from '@/lib/types';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const reports = await getAllReports();
