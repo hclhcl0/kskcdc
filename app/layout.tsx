@@ -11,6 +11,8 @@ const beVietnamPro = Be_Vietnam_Pro({
   variable: '--font-be-vietnam',
 });
 
+import Footer from '@/components/layout/Footer';
+
 export const metadata: Metadata = {
   title: 'Báo cáo Khám Sức khỏe Toàn dân | Thành phố Đà Nẵng',
   description: 'Hệ thống báo cáo số liệu khám sức khỏe định kỳ cho các đơn vị y tế trên địa bàn.',
@@ -24,10 +26,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={beVietnamPro.variable}>
-      <body className="min-h-screen bg-slate-50 font-sans antialiased">
+      <body className="min-h-screen bg-slate-50 font-sans antialiased flex flex-col">
         <AuthProvider>
           <Navbar />
-          <main className="pt-16">{children}</main>
+          <main className="pt-16 flex-1">{children}</main>
+          <Footer />
         </AuthProvider>
       </body>
     </html>
