@@ -2,7 +2,7 @@ import PageHeader from '@/components/layout/PageHeader';
 import {
   BookOpen, FileText, CheckCircle2, LayoutDashboard,
   Target, Users, AlertCircle, Activity, Edit2, Trash2,
-  Clock, ShieldCheck, ClipboardList, Info
+  Clock, ShieldCheck, ClipboardList, Info, Settings
 } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -192,8 +192,18 @@ export default function GuidePage() {
             </NoteBox>
           </SubSection>
 
-          {/* 2.4 Đợt tiêm */}
-          <SubSection icon={<ClipboardList className="w-5 h-5 text-rose-500" />} title="2.4. Quản lý Đợt tiêm & Vắc xin">
+          {/* 2.4 Cài đặt Đối tượng khám */}
+          <SubSection icon={<Settings className="w-5 h-5 text-indigo-600" />} title="2.4. Cài đặt Đối tượng khám">
+            <p className="text-sm text-slate-600 mb-3">Truy cập <strong>Quản trị → Cài đặt Đối tượng</strong>.</p>
+            <ul className="list-disc pl-5 text-slate-600 space-y-2 text-sm leading-relaxed mb-4">
+              <li><strong>Tạo / Sửa đối tượng:</strong> Thêm mới các nhóm đối tượng khám (tùy chọn màu sắc, icon, tên gọi).</li>
+              <li><strong>Phân bổ đơn vị:</strong> Chỉ định các Trạm Y tế cụ thể được phép áp dụng (hiển thị) đối tượng khám này.</li>
+              <li><strong>Áp dụng Toàn hệ thống:</strong> Đánh dấu mục này nếu bạn muốn đối tượng mặc định hiển thị cho tất cả các Trạm Y tế mà không cần phân bổ thủ công.</li>
+            </ul>
+          </SubSection>
+
+          {/* 2.5 Đợt tiêm */}
+          <SubSection icon={<ClipboardList className="w-5 h-5 text-rose-500" />} title="2.5. Quản lý Đợt tiêm & Vắc xin">
             <p className="text-sm text-slate-600 mb-3">Truy cập <strong>Quản trị → Quản lý Đợt tiêm</strong>.</p>
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               <div className="border border-slate-200 rounded-xl p-4">
@@ -210,8 +220,8 @@ export default function GuidePage() {
             </NoteBox>
           </SubSection>
 
-          {/* 2.5 Tài khoản */}
-          <SubSection icon={<Users className="w-5 h-5 text-blue-500" />} title="2.5. Quản lý Tài khoản">
+          {/* 2.6 Tài khoản */}
+          <SubSection icon={<Users className="w-5 h-5 text-blue-500" />} title="2.6. Quản lý Tài khoản">
             <p className="text-sm text-slate-600 mb-3">Truy cập <strong>Quản trị → Tài khoản</strong>.</p>
             <ul className="list-disc pl-5 text-slate-600 space-y-2 text-sm leading-relaxed">
               <li><strong>Duyệt tài khoản mới:</strong> Xem danh sách các đơn vị mới đăng ký (trạng thái "Chờ duyệt") và thao tác Duyệt hoặc Từ chối.</li>
@@ -221,8 +231,8 @@ export default function GuidePage() {
             </ul>
           </SubSection>
 
-          {/* 2.6 Lịch sử */}
-          <SubSection icon={<FileText className="w-5 h-5 text-slate-500" />} title="2.6. Lịch sử báo cáo (Quyền Admin)">
+          {/* 2.7 Lịch sử */}
+          <SubSection icon={<FileText className="w-5 h-5 text-slate-500" />} title="2.7. Lịch sử báo cáo (Quyền Admin)">
             <p className="text-sm text-slate-600 mb-3">
               Admin thấy <strong>toàn bộ báo cáo</strong> của tất cả đơn vị ở trang <strong>"Lịch sử báo cáo"</strong>, không bị giới hạn theo đơn vị.
             </p>
