@@ -2,8 +2,8 @@
 
 import { ProgressDashboard, StatProgress, UnitProgress } from '@/lib/types';
 import { formatNumber } from '@/lib/utils';
-import { AlertCircle, Target, Trophy, Info, Edit2, Check, X, Loader2, Download } from 'lucide-react';
-import { useState } from 'react';
+import { AlertCircle, Target, Trophy, Info, Edit2, Check, X, Loader2, Download, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -19,6 +19,17 @@ export default function ProgressTable({ data }: ProgressTableProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterFacility, setFilterFacility] = useState('');
+  
+  // Advanced search and pagination state
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [filterStatus, setFilterStatus] = useState('');
+  const [filterProgress, setFilterProgress] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterFacility, filterStatus, filterProgress]);
   
   // Inline edit state
   const [editingUnitId, setEditingUnitId] = useState<string | null>(null);
@@ -65,8 +76,28 @@ export default function ProgressTable({ data }: ProgressTableProps) {
   const filteredUnits = data.units.filter((u) => {
     const matchSearch = u.don_vi.toLowerCase().includes(searchTerm.toLowerCase());
     const matchFacility = filterFacility ? u.co_so_y_te === filterFacility : true;
-    return matchSearch && matchFacility;
+    
+    let matchStatus = true;
+    if (filterStatus === 'submitted') matchStatus = u.reportCount > 0;
+    if (filterStatus === 'unsubmitted') matchStatus = u.reportCount === 0;
+
+    let matchProgress = true;
+    if (filterProgress !== '') {
+      if (u.overallPct === null) {
+        matchProgress = false;
+      } else {
+        if (filterProgress === 'under50') matchProgress = u.overallPct < 50;
+        else if (filterProgress === '50to80') matchProgress = u.overallPct >= 50 && u.overallPct < 80;
+        else if (filterProgress === '80to100') matchProgress = u.overallPct >= 80 && u.overallPct < 100;
+        else if (filterProgress === 'over100') matchProgress = u.overallPct >= 100;
+      }
+    }
+
+    return matchSearch && matchFacility && matchStatus && matchProgress;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredUnits.length / itemsPerPage));
+  const currentUnits = filteredUnits.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const facilities = Array.from(new Set(data.units.map(u => u.co_so_y_te).filter(Boolean))).sort();
 
@@ -91,43 +122,93 @@ export default function ProgressTable({ data }: ProgressTableProps) {
               </span>
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <button 
               onClick={handleExport}
-              className="text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4 py-2 font-medium transition-colors flex items-center justify-center gap-2"
+              className="text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4 py-2 font-medium transition-colors flex items-center justify-center gap-2 flex-shrink-0"
             >
               <Download className="w-4 h-4" />
-              Xuất báo cáo
+              <span className="hidden sm:inline">Xuất báo cáo</span>
             </button>
-            <select
-              value={filterFacility}
-              onChange={(e) => setFilterFacility(e.target.value)}
-              className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-slate-50 outline-none focus:border-blue-500"
-            >
-              <option value="">Tất cả Cơ sở y tế</option>
-              {facilities.map(f => (
-                <option key={f} value={f}>{f}</option>
-              ))}
-            </select>
-            <input
-              type="text"
-              placeholder="Tìm đơn vị báo cáo..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-slate-50 outline-none focus:border-blue-500 min-w-[200px]"
-            />
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <input
+                type="text"
+                placeholder="Tìm đơn vị báo cáo..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-slate-50 outline-none focus:border-blue-500 w-full sm:w-auto sm:min-w-[200px]"
+              />
+              <button
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                className={`p-2 rounded-lg border transition-colors flex items-center justify-center flex-shrink-0 ${
+                  showAdvanced || filterStatus || filterProgress || filterFacility 
+                    ? 'bg-blue-50 border-blue-200 text-blue-600' 
+                    : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                }`}
+                title="Tìm kiếm nâng cao"
+              >
+                <Filter className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Advanced Search Panel */}
+      {showAdvanced && (
+        <div className="px-5 py-4 bg-slate-50/80 border-b border-slate-100 animate-in slide-in-from-top-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Lọc theo Cơ sở y tế</label>
+              <select
+                value={filterFacility}
+                onChange={(e) => setFilterFacility(e.target.value)}
+                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white outline-none focus:border-blue-500"
+              >
+                <option value="">Tất cả Cơ sở y tế</option>
+                {facilities.map(f => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Trạng thái nộp</label>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white outline-none focus:border-blue-500"
+              >
+                <option value="">Tất cả trạng thái</option>
+                <option value="submitted">Đã nộp báo cáo</option>
+                <option value="unsubmitted">Chưa nộp báo cáo</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Tiến độ hoàn thành</label>
+              <select
+                value={filterProgress}
+                onChange={(e) => setFilterProgress(e.target.value)}
+                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white outline-none focus:border-blue-500"
+              >
+                <option value="">Tất cả tiến độ</option>
+                <option value="over100">Vượt chỉ tiêu (≥ 100%)</option>
+                <option value="80to100">Gần hoàn thành (80% - 99%)</option>
+                <option value="50to80">Trung bình (50% - 79%)</option>
+                <option value="under50">Thấp (&lt; 50%)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Flash Cards (All screens) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 p-4 bg-slate-50/50">
-        {filteredUnits.length === 0 ? (
-          <div className="text-center py-8 text-slate-400 text-sm">
+        {currentUnits.length === 0 ? (
+          <div className="text-center py-8 text-slate-400 text-sm col-span-full">
             Không tìm thấy đơn vị nào phù hợp
           </div>
         ) : (
-          filteredUnits.map((row) => (
+          currentUnits.map((row) => (
             <div key={row.don_vi} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm relative group">
               <div className="flex justify-between items-start mb-4 border-b border-slate-100 pb-4">
                 <div className="flex-1 pr-4">
@@ -227,6 +308,34 @@ export default function ProgressTable({ data }: ProgressTableProps) {
           ))
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="px-5 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white">
+          <p className="text-sm text-slate-500">
+            Hiển thị <span className="font-semibold text-slate-700">{(currentPage - 1) * itemsPerPage + 1}</span> đến <span className="font-semibold text-slate-700">{Math.min(currentPage * itemsPerPage, filteredUnits.length)}</span> trong tổng số <span className="font-semibold text-slate-700">{filteredUnits.length}</span> đơn vị
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <span className="text-sm font-medium text-slate-700 px-2 min-w-[5rem] text-center">
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
       
       {data.unitsNoBenchmark.length > 0 && (
         <div className="bg-slate-50 border-t border-slate-100 p-4 text-xs text-slate-500 flex items-start gap-2">
