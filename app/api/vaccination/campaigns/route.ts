@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCampaigns, addCampaign, deleteCampaign, getVaccines, addVaccine, deleteVaccine } from '@/lib/vaccination_data';
+import { getCampaigns, addCampaign, updateCampaign, deleteCampaign, getVaccines, addVaccine, deleteVaccine } from '@/lib/vaccination_data';
 import { auth } from '@/lib/auth';
 
 export async function GET(request: Request) {
@@ -62,6 +62,23 @@ export async function POST(request: Request) {
       });
       return NextResponse.json(newC);
     }
+
+    if (action === 'update_campaign') {
+      const { id, name, vaccines, startDate, endDate, status } = body.data;
+      if (!id || !name || !vaccines || !Array.isArray(vaccines) || vaccines.length === 0 || !startDate || !endDate) {
+        return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      }
+
+      const updatedC = await updateCampaign(id, {
+        name,
+        vaccines: vaccines.map((v: any) => ({ vaccineId: v.vaccineId, totalAllocated: Number(v.totalAllocated) })),
+        startDate,
+        endDate,
+        status: status || 'active'
+      });
+      return NextResponse.json(updatedC);
+    }
+
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error) {

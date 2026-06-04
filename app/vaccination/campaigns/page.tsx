@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Vaccine, VaccineCampaign, CampaignVaccine } from '@/lib/types';
-import { Plus, Trash2, ShieldPlus, CalendarDays, CheckCircle2, X } from 'lucide-react';
+import { Plus, Trash2, ShieldPlus, CalendarDays, CheckCircle2, X, Edit2 } from 'lucide-react';
+import EditCampaignModal from '@/components/vaccination/EditCampaignModal';
 
 type EnrichedCampaign = VaccineCampaign & { 
   vaccinesInfo: (CampaignVaccine & { name: string })[] 
@@ -15,10 +16,13 @@ export default function CampaignsPage() {
   const [newVaccine, setNewVaccine] = useState({ name: '', description: '' });
   const [newCampaign, setNewCampaign] = useState({ 
     name: '', 
-    startDate: '', 
-    endDate: '',
+    startDate: new Date().toISOString().split('T')[0], 
+    endDate: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().split('T')[0],
+    status: 'active',
     vaccines: [] as { vaccineId: string; totalAllocated: string }[]
   });
+  
+  const [editingCampaign, setEditingCampaign] = useState<EnrichedCampaign | null>(null);
   
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
@@ -107,8 +111,9 @@ export default function CampaignsPage() {
     });
     setNewCampaign({ 
       name: '', 
-      startDate: '', 
-      endDate: '',
+      startDate: new Date().toISOString().split('T')[0], 
+      endDate: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().split('T')[0],
+      status: 'active',
       vaccines: vaccines.length > 0 ? [{ vaccineId: vaccines[0].id, totalAllocated: '' }] : []
     });
     fetchData();
@@ -269,9 +274,14 @@ export default function CampaignsPage() {
                       {new Date(c.startDate).toLocaleDateString('vi-VN')} - {new Date(c.endDate).toLocaleDateString('vi-VN')}
                     </div>
                   </div>
-                  <button onClick={() => handleDelete('campaign', c.id)} className="self-end sm:self-center px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
-                    Xóa
-                  </button>
+                  <div className="self-end sm:self-center flex gap-2">
+                    <button onClick={() => setEditingCampaign(c)} className="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors flex items-center gap-1">
+                      <Edit2 className="w-3.5 h-3.5" /> Sửa
+                    </button>
+                    <button onClick={() => handleDelete('campaign', c.id)} className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                      Xóa
+                    </button>
+                  </div>
                 </div>
               ))}
               {campaigns.length === 0 && (
@@ -284,6 +294,14 @@ export default function CampaignsPage() {
           </div>
         </div>
       </div>
+
+      <EditCampaignModal 
+        isOpen={!!editingCampaign}
+        onClose={() => setEditingCampaign(null)}
+        campaign={editingCampaign}
+        vaccines={vaccines}
+        onSuccess={fetchData}
+      />
     </div>
   );
 }
