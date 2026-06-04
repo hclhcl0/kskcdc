@@ -77,6 +77,7 @@ export interface ProgressDashboard {
   systemOverallPct: number | null;
   unitsWith0Reports: string[];   // đơn vị chưa nộp báo cáo nào
   unitsNoBenchmark: string[];    // đơn vị chưa có chỉ tiêu
+  systemGroupStats?: StatProgress[];
 }
 
 // ─── Vaccination Module Types ────────────────────────────────────────────────

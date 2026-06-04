@@ -267,5 +267,27 @@ export async function getProgressDashboard(): Promise<ProgressDashboard> {
     ? Math.round(validSystem.reduce((sum, u) => sum + (u.overallPct ?? 0), 0) / validSystem.length)
     : null;
 
-  return { units, systemOverallPct, unitsWith0Reports, unitsNoBenchmark };
+  const systemGroupStatsMap = new Map<string, { achieved: number; target: number }>();
+  groups.forEach(g => systemGroupStatsMap.set(g.key, { achieved: 0, target: 0 }));
+
+  units.forEach(u => {
+    u.stats.forEach(s => {
+      const g = systemGroupStatsMap.get(s.key);
+      if (g) {
+        g.achieved += s.achieved;
+        if (s.target !== null) g.target += s.target;
+      }
+    });
+  });
+
+  const systemGroupStats: StatProgress[] = groups.map(g => {
+    const data = systemGroupStatsMap.get(g.key)!;
+    let pct: number | null = null;
+    if (data.target > 0) {
+      pct = Math.round((data.achieved / data.target) * 100);
+    }
+    return { key: g.key, label: g.name, icon: g.icon || '', achieved: data.achieved, target: data.target > 0 ? data.target : null, pct };
+  });
+
+  return { units, systemOverallPct, unitsWith0Reports, unitsNoBenchmark, systemGroupStats };
 }
