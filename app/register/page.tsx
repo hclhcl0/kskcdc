@@ -132,9 +132,10 @@ export default function RegisterPage() {
                 onChange={(e) => setFormData({...formData, orgType: e.target.value})}
                 className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40"
               >
-                <option value="school">Trường học / Cơ sở giáo dục</option>
-                <option value="military">Lực lượng vũ trang</option>
-                <option value="enterprise">Doanh nghiệp / Công ty</option>
+                <option value="school">Sở GDĐT/Trường học/cơ sở giáo dục</option>
+                <option value="army">Lực lượng quân đội</option>
+                <option value="police">Lực lượng công an</option>
+                <option value="enterprise">Doanh nghiệp/Cơ quan/Đơn vị</option>
                 <option value="other">Tổ chức khác</option>
               </select>
             </div>
