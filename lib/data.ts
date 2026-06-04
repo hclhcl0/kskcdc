@@ -199,7 +199,7 @@ export async function getProgressDashboard(): Promise<ProgressDashboard> {
       const target = bm[key];
       let pct: number | null = null;
       if (target !== null && target > 0) {
-        pct = Math.min(100, Math.round((achieved / target) * 100));
+        pct = Math.round((achieved / target) * 100);
       }
       return { key, label, icon, achieved, target, pct };
     });

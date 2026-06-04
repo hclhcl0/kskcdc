@@ -174,16 +174,28 @@ export default function ProgressTable({ data }: ProgressTableProps) {
                     )}
                   </div>
                 </div>
-                <div className="flex-shrink-0 text-center bg-slate-50 rounded-lg p-2 min-w-[70px] border border-slate-100">
+                <div className={`flex-shrink-0 text-center rounded-lg p-2 min-w-[70px] border ${
+                  row.overallPct !== null && row.overallPct >= 100
+                    ? 'bg-violet-50 border-violet-200'
+                    : 'bg-slate-50 border-slate-100'
+                }`}>
                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Trung bình</span>
                    {row.overallPct !== null ? (
-                      <div className={`font-bold text-lg ${
-                        row.overallPct >= 80 ? 'text-emerald-600' :
-                        row.overallPct >= 50 ? 'text-amber-600' :
-                        'text-red-600'
-                      }`}>
-                        {row.overallPct}%
-                      </div>
+                      <>
+                        <div className={`font-bold text-lg ${
+                          row.overallPct >= 100 ? 'text-violet-600' :
+                          row.overallPct >= 80  ? 'text-emerald-600' :
+                          row.overallPct >= 50  ? 'text-amber-600' :
+                          'text-red-600'
+                        }`}>
+                          {row.overallPct}%
+                        </div>
+                        {row.overallPct >= 100 && (
+                          <span className="text-[9px] font-bold text-violet-500 bg-violet-100 px-1.5 py-0.5 rounded-full block mt-0.5">
+                            🏆 Vượt CT
+                          </span>
+                        )}
+                      </>
                    ) : (
                       <span className="text-slate-400">-</span>
                    )}
@@ -252,28 +264,38 @@ function ProgressCell({ stat }: { stat: StatProgress }) {
   }
 
   const pct = stat.pct ?? 0;
-  
-  let color = 'bg-red-500';
-  let lightColor = 'bg-red-100';
-  if (pct >= 80) { color = 'bg-emerald-500'; lightColor = 'bg-emerald-100'; }
-  else if (pct >= 50) { color = 'bg-amber-500'; lightColor = 'bg-amber-100'; }
-  
-  // Cap visual bar at 100%
-  const widthPct = Math.min(100, pct);
+  const isExceeded = pct >= 100;
+
+  let barColor = 'bg-red-500';
+  let trackColor = 'bg-red-100';
+  let textColor = 'text-slate-700';
+
+  if (isExceeded)       { barColor = 'bg-violet-500'; trackColor = 'bg-violet-100'; textColor = 'text-violet-600'; }
+  else if (pct >= 80)   { barColor = 'bg-emerald-500'; trackColor = 'bg-emerald-100'; textColor = 'text-emerald-700'; }
+  else if (pct >= 50)   { barColor = 'bg-amber-500'; trackColor = 'bg-amber-100'; textColor = 'text-amber-700'; }
+  else                  { textColor = 'text-red-600'; }
+
+  // Bar always full (100%) when exceeded, show as overflowing with pulse
+  const widthPct = isExceeded ? 100 : pct;
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-end mb-1">
+      <div className="flex justify-between items-center mb-1">
         <span className="text-[11px] font-medium text-slate-500">
           {formatNumber(stat.achieved)} / {formatNumber(stat.target)}
         </span>
-        <span className={`text-xs font-bold ${pct >= 100 ? 'text-emerald-600' : 'text-slate-700'}`}>
-          {pct}%
-        </span>
+        <div className="flex items-center gap-1">
+          {isExceeded && (
+            <span className="text-[9px] font-bold text-violet-600 bg-violet-100 px-1 py-0.5 rounded-full">Vượt</span>
+          )}
+          <span className={`text-xs font-bold ${textColor}`}>
+            {pct}%
+          </span>
+        </div>
       </div>
-      <div className={`h-1.5 w-full rounded-full overflow-hidden ${lightColor}`}>
-        <div 
-          className={`h-full ${color} transition-all duration-500`} 
+      <div className={`h-1.5 w-full rounded-full overflow-hidden ${trackColor}`}>
+        <div
+          className={`h-full ${barColor} transition-all duration-500 ${isExceeded ? 'animate-pulse' : ''}`}
           style={{ width: `${widthPct}%` }}
         />
       </div>
