@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Activity, LayoutDashboard, FileText, Menu, X,
-  LogOut, ChevronDown, Users, Target, Settings,
+  LogOut, ChevronDown, Users, Target, Settings, BookOpen
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { signOut, useSession } from 'next-auth/react';
@@ -17,6 +17,7 @@ const mainLinks = [
   { href: '/vaccination/dashboard', label: 'Tiến độ Tiêm chủng',  icon: Activity                          },
   { href: '/vaccination/submit',    label: 'Báo cáo Tiêm chủng',  icon: FileText,        unitOnly: true  },
   { href: '/history',               label: 'Lịch sử báo cáo',     icon: FileText                          },
+  { href: '/guide',                 label: 'Hướng dẫn',           icon: BookOpen                          },
 ];
 
 // Các link gom vào dropdown "Quản trị" (chỉ admin)
