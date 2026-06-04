@@ -78,6 +78,19 @@ export default function ReportForm() {
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [dateLimits, setDateLimits] = useState({ min: '', max: '' });
+
+  useEffect(() => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    const localNow = new Date(now.getTime() - offset);
+    const max = localNow.toISOString().split('T')[0];
+    
+    const localMin = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000 - offset);
+    const min = localMin.toISOString().split('T')[0];
+    
+    setDateLimits({ min, max });
+  }, []);
 
   useEffect(() => {
     if (session?.user && ((session.user as any).role === 'admin' || (session.user as any).role === 'admin_cdc')) {
@@ -306,6 +319,8 @@ export default function ReportForm() {
             <input
               id="ngay_kham"
               type="date"
+              min={dateLimits.min}
+              max={dateLimits.max}
               className={inputCls(!!errors.ngay_kham)}
               {...register('ngay_kham')}
             />

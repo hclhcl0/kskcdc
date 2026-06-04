@@ -15,6 +15,7 @@ export default function SubmitVaccinationPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [dateLimits, setDateLimits] = useState({ min: '', max: '' });
 
   // form state
   const [formData, setFormData] = useState<any>({
@@ -44,6 +45,18 @@ export default function SubmitVaccinationPage() {
       .catch(err => {
         setLoading(false);
       });
+
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    const localNow = new Date(now.getTime() - offset);
+    const max = localNow.toISOString().split('T')[0];
+    
+    const localMin = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000 - offset);
+    const min = localMin.toISOString().split('T')[0];
+    setDateLimits({ min, max });
+    
+    // update default form data to local today
+    setFormData((prev: any) => ({ ...prev, ngay_tiem: max }));
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -152,7 +165,7 @@ export default function SubmitVaccinationPage() {
                 
                 <div>
                   <label className="block text-sm font-semibold text-slate-800 mb-1.5">Ngày tiêm <span className="text-red-500">*</span></label>
-                  <input type="date" name="ngay_tiem" value={formData.ngay_tiem} onChange={handleChange} required className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 font-medium shadow-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none" />
+                  <input type="date" name="ngay_tiem" value={formData.ngay_tiem} min={dateLimits.min} max={dateLimits.max} onChange={handleChange} required className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 font-medium shadow-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none" />
                 </div>
                 
                 <div>
