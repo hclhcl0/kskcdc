@@ -69,7 +69,7 @@ export default async function DashboardPage() {
             Tỷ lệ Hoàn thành theo Nhóm đối tượng (Toàn Thành phố)
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {progress.systemGroupStats.filter(g => g.target !== null).map((stat) => (
+            {progress.systemGroupStats.map((stat) => (
               <div key={stat.key} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xl">{stat.icon}</span>
@@ -77,9 +77,9 @@ export default async function DashboardPage() {
                 </div>
                 <div className="flex items-end justify-between mb-2">
                   <div>
-                    <p className="text-2xl font-bold text-blue-700">{stat.pct ?? 0}%</p>
+                    <p className="text-2xl font-bold text-blue-700">{stat.target ? `${stat.pct ?? 0}%` : '--%'}</p>
                     <p className="text-xs text-slate-500">
-                      {stat.achieved.toLocaleString('vi-VN')} / {stat.target?.toLocaleString('vi-VN')}
+                      {stat.achieved.toLocaleString('vi-VN')} / {stat.target ? stat.target.toLocaleString('vi-VN') : '0 (chưa có chỉ tiêu)'}
                     </p>
                   </div>
                 </div>
