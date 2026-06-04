@@ -201,6 +201,18 @@ export default function ProgressTable({ data }: ProgressTableProps) {
         </div>
       )}
 
+      {/* Top Pagination Info */}
+      {totalPages > 1 && (
+        <div className="px-5 py-3 bg-white border-b border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+          <p>
+            Đang hiển thị <strong>{(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredUnits.length)}</strong> trên tổng số <strong>{filteredUnits.length}</strong> đơn vị
+          </p>
+          <div className="flex items-center gap-1 font-medium bg-slate-50 px-2 py-1 rounded-md border border-slate-200">
+             Trang <span className="text-slate-800">{currentPage}</span> / {totalPages}
+          </div>
+        </div>
+      )}
+
       {/* Flash Cards (All screens) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 p-4 bg-slate-50/50">
         {currentUnits.length === 0 ? (
