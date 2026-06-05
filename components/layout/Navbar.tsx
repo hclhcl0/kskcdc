@@ -21,13 +21,28 @@ const mainLinks = [
   { href: '/guide',                 label: 'Hướng dẫn',             icon: BookOpen                          },
 ];
 
-const adminMenuLinks = [
-  { href: '/vaccination/campaigns', label: 'Quản lý Đợt tiêm',   icon: Activity  },
-  { href: '/benchmarks',            label: 'Xem chỉ tiêu',        icon: Target    },
-  { href: '/accounts',              label: 'Tài khoản',            icon: Users     },
-  { href: '/admin/facilities',      label: 'Cơ sở y tế',          icon: Building2 },
-  { href: '/admin/demographics',    label: 'Cài đặt Đối tượng',   icon: Settings  },
-  { href: '/admin/settings',        label: 'Cài đặt chung',       icon: Settings  },
+const adminMenuGroups = [
+  {
+    group: 'Danh mục',
+    links: [
+      { href: '/accounts',              label: 'Tài khoản',            icon: Users     },
+      { href: '/admin/facilities',      label: 'Cơ sở y tế',          icon: Building2 },
+    ]
+  },
+  {
+    group: 'Nghiệp vụ',
+    links: [
+      { href: '/benchmarks',            label: 'Chỉ tiêu Khám SK',    icon: Target    },
+      { href: '/vaccination/campaigns', label: 'Đợt Tiêm chủng',       icon: Activity  },
+    ]
+  },
+  {
+    group: 'Cài đặt',
+    links: [
+      { href: '/admin/demographics',    label: 'Nhóm Đối tượng',      icon: Users     },
+      { href: '/admin/settings',        label: 'Hệ thống',            icon: Settings  },
+    ]
+  }
 ];
 
 export default function Navbar() {
@@ -46,7 +61,7 @@ export default function Navbar() {
     return true;
   });
 
-  const isAdminActive = adminMenuLinks.some((l) => pathname === l.href || pathname.startsWith(l.href));
+  const isAdminActive = adminMenuGroups.some((g) => g.links.some((l) => pathname === l.href || pathname.startsWith(l.href)));
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: '/login' });
@@ -132,27 +147,31 @@ export default function Navbar() {
 
                     {(role === 'admin' || role === 'admin_cdc') && (
                       <div className="py-1 border-b border-slate-100 mb-1">
-                        <p className="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                          Quản trị hệ thống
-                        </p>
-                        {adminMenuLinks.map(({ href, label, icon: Icon }) => {
-                          const isActive = pathname === href || pathname.startsWith(href);
-                          return (
-                            <Link
-                              key={href}
-                              href={href}
-                              onClick={() => setUserMenuOpen(false)}
-                              className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
-                                isActive
-                                  ? 'bg-blue-50 text-blue-700 font-semibold'
-                                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                              }`}
-                            >
-                              <Icon className="w-4 h-4" />
-                              {label}
-                            </Link>
-                          );
-                        })}
+                        {adminMenuGroups.map((g, i) => (
+                          <div key={g.group} className={i > 0 ? "mt-2 pt-1 border-t border-slate-50/50" : ""}>
+                            <p className="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                              {g.group}
+                            </p>
+                            {g.links.map(({ href, label, icon: Icon }) => {
+                              const isActive = pathname === href || pathname.startsWith(href);
+                              return (
+                                <Link
+                                  key={href}
+                                  href={href}
+                                  onClick={() => setUserMenuOpen(false)}
+                                  className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
+                                    isActive
+                                      ? 'bg-blue-50 text-blue-700 font-semibold'
+                                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                  }`}
+                                >
+                                  <Icon className="w-4 h-4" />
+                                  {label}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        ))}
                       </div>
                     )}
 
@@ -223,26 +242,30 @@ export default function Navbar() {
 
           {/* Admin section (mobile) */}
           {(role === 'admin' || role === 'admin_cdc') && (
-            <div className="pt-1">
-              <p className="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Quản trị
-              </p>
-              {adminMenuLinks.map(({ href, label, icon: Icon }) => {
-                const isActive = pathname === href;
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    onClick={() => setMobileOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      isActive ? 'bg-amber-50 text-amber-700' : 'text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {label}
-                  </Link>
-                );
-              })}
+            <div className="pt-1 pb-1">
+              {adminMenuGroups.map((g, i) => (
+                <div key={g.group} className={i > 0 ? "mt-2" : ""}>
+                  <p className="px-4 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    {g.group}
+                  </p>
+                  {g.links.map(({ href, label, icon: Icon }) => {
+                    const isActive = pathname === href;
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        onClick={() => setMobileOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                          isActive ? 'bg-amber-50 text-amber-700' : 'text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           )}
 
