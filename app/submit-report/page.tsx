@@ -14,7 +14,7 @@ export default function SubmitReportPage() {
       <PageHeader
         icon={<FileText className="w-5 h-5 text-white" />}
         title="Biểu mẫu Báo cáo Kết quả Khám Sức khỏe Toàn dân"
-        description="Dành cho các trạm y tế, phòng khám tuyến dưới — Theo hướng dẫn của Sở Y tế Đà Nẵng"
+        description=""
         note="Mỗi đơn vị chỉ được nộp 1 báo cáo/ngày. Bạn có thể sửa hoặc xóa báo cáo trong phạm vi ngày nộp và ngày hôm sau. Chỉ nộp báo cáo trong vòng 7 ngày gần đây."
       />
 
