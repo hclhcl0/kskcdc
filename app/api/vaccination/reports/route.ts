@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getVaccinationReports, addVaccinationReport } from '@/lib/vaccination_data';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { GROUP_DEFINITIONS } from '@/lib/constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,11 +39,21 @@ export async function POST(request: Request) {
       }
     }
 
+    // Extract details from flat body structure
+    const details = GROUP_DEFINITIONS.map(g => ({
+      groupKey: g.key,
+      count: body[g.key] !== undefined ? parseInt(body[g.key], 10) : 0
+    }));
+
     // Add report
     const newReport = await addVaccinationReport({
-      ...body,
+      campaignId,
+      vaccineId,
+      ngay_tiem,
+      nguoi_nop_bao_cao,
       don_vi,
       co_so_y_te: !isAdmin && (session.user as any).facilityName ? (session.user as any).facilityName : (body.co_so_y_te || ''),
+      details
     });
 
     return NextResponse.json(newReport, { status: 201 });
