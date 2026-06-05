@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Be_Vietnam_Pro } from 'next/font/google';
+import { Be_Vietnam_Pro, Geist } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import AuthProvider from '@/components/layout/AuthProvider';
@@ -12,6 +12,9 @@ const beVietnamPro = Be_Vietnam_Pro({
 });
 
 import Footer from '@/components/layout/Footer';
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: 'Báo cáo Khám Sức khỏe Toàn dân | Thành phố Đà Nẵng',
@@ -25,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={beVietnamPro.variable}>
+    <html lang="vi" className={cn("font-sans", geist.variable)}>
       <body className="min-h-screen bg-slate-50 font-sans antialiased flex flex-col">
         <AuthProvider>
           <Navbar />

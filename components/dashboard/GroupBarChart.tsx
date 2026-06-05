@@ -6,31 +6,19 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
   Cell,
 } from 'recharts';
 import { GroupStat } from '@/lib/types';
 import { formatNumber } from '@/lib/utils';
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 interface GroupBarChartProps {
   data: GroupStat[];
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function CustomTooltip({ active, payload, label }: any) {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-lg px-4 py-3">
-        <p className="text-sm font-semibold text-slate-700 mb-1">{label}</p>
-        <p className="text-xl font-bold" style={{ color: payload[0].fill }}>
-          {formatNumber(payload[0].value)}
-        </p>
-        <p className="text-xs text-slate-400">người được khám</p>
-      </div>
-    );
-  }
-  return null;
 }
 
 export default function GroupBarChart({ data }: GroupBarChartProps) {
@@ -38,19 +26,27 @@ export default function GroupBarChart({ data }: GroupBarChartProps) {
     name: d.shortLabel,
     label: d.label,
     total: d.total,
-    color: d.color,
+    fill: d.color,
   }));
 
+  const chartConfig = {
+    total: {
+      label: "Người được khám",
+    },
+  } satisfies ChartConfig;
+
   return (
-    <div className="card p-5">
+    <div className="card p-5 flex flex-col justify-between h-full">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-base font-bold text-slate-800">Thống kê theo nhóm đối tượng</h2>
           <p className="text-xs text-slate-400 mt-0.5">Tổng hợp toàn hệ thống</p>
         </div>
       </div>
-      <ResponsiveContainer width="100%" height={320}>
+      
+      <ChartContainer config={chartConfig} className="w-full h-[320px]">
         <BarChart
+          accessibilityLayer
           data={chartData}
           margin={{ top: 8, right: 12, left: 0, bottom: 40 }}
           barSize={36}
@@ -72,14 +68,17 @@ export default function GroupBarChart({ data }: GroupBarChartProps) {
             tickFormatter={(v) => formatNumber(v)}
             width={55}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc', radius: 8 }} />
+          <ChartTooltip
+            cursor={{ fill: '#f8fafc', radius: 8 }}
+            content={<ChartTooltipContent hideLabel />}
+          />
           <Bar dataKey="total" radius={[6, 6, 0, 0]}>
             {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
+              <Cell key={`cell-${index}`} fill={entry.fill} />
             ))}
           </Bar>
         </BarChart>
-      </ResponsiveContainer>
+      </ChartContainer>
 
       {/* Legend */}
       <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-3 border-t border-slate-100">

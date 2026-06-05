@@ -21,3 +21,10 @@ export function formatDateTime(isoStr: string): string {
     minute: '2-digit',
   });
 }
+
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}

@@ -5,6 +5,7 @@ import { getProgressDashboard } from '@/lib/data';
 import { Activity, Target, TrendingUp, Calendar, CheckCircle2, ArrowLeft } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import HistoryChart from '@/components/dashboard/HistoryChart';
 
 export const metadata: Metadata = {
   title: 'Dashboard Đơn vị | CDC',
@@ -158,8 +159,8 @@ export default async function UnitDashboardPage({ params }: { params: { don_vi: 
         </div>
       </div>
 
-      {/* Basic History Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      {/* History Chart */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-8">
         <div className="p-5 border-b border-slate-100 bg-slate-50/50">
           <h2 className="font-bold text-slate-800 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-blue-500" />
@@ -167,35 +168,7 @@ export default async function UnitDashboardPage({ params }: { params: { don_vi: 
           </h2>
         </div>
         <div className="p-6">
-          {chartData.length > 0 ? (
-            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-              {chartData.map((data) => {
-                const maxTotal = chartData[chartData.length - 1].total || 1;
-                const width = Math.max(5, (data.total / maxTotal) * 100);
-                
-                return (
-                  <div key={data.date} className="flex items-center gap-4">
-                    <div className="w-24 text-sm font-medium text-slate-600 flex-shrink-0">
-                      {new Date(data.date).toLocaleDateString('vi-VN')}
-                    </div>
-                    <div className="flex-1 bg-slate-100 rounded-lg h-8 relative flex items-center">
-                      <div 
-                        className="bg-blue-200 h-full rounded-lg absolute left-0 top-0 transition-all duration-500"
-                        style={{ width: `${width}%` }}
-                      ></div>
-                      <span className="relative z-10 px-3 text-xs font-bold text-blue-900">
-                        {data.total.toLocaleString('vi-VN')}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-10 text-slate-500 text-sm">
-              Chưa có dữ liệu báo cáo nào.
-            </div>
-          )}
+          <HistoryChart data={chartData} />
         </div>
       </div>
     </div>
