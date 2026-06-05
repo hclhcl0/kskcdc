@@ -8,6 +8,7 @@ export interface Account {
   role: string;
   status?: string;
   orgType?: string;
+  allowEditOverride?: boolean;
 }
 
 // Lấy tất cả tài khoản
@@ -19,6 +20,7 @@ export async function getAccounts(): Promise<Account[]> {
     role: a.role,
     status: a.status,
     orgType: a.orgType,
+    allowEditOverride: a.allowEditOverride,
     // We omit password here for safety, unless it's needed for the admin view.
     // The previous implementation returned everything.
     password: a.password
@@ -56,6 +58,7 @@ export async function addAccount(account: Account): Promise<Account> {
       role: account.role,
       status: account.status || 'approved',
       orgType: account.orgType || '',
+      allowEditOverride: account.allowEditOverride || false,
     }
   });
   return newAccount;
@@ -72,6 +75,7 @@ export async function updateAccount(username: string, updates: Partial<Account>)
         ...(updates.role && { role: updates.role }),
         ...(updates.status && { status: updates.status }),
         ...(updates.orgType !== undefined && { orgType: updates.orgType }),
+        ...(updates.allowEditOverride !== undefined && { allowEditOverride: updates.allowEditOverride }),
       }
     });
     return updated;
