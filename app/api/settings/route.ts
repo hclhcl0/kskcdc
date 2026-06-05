@@ -15,7 +15,7 @@ export async function GET() {
     }
 
     const settings = await prisma.systemSetting.findMany();
-    const settingsMap = settings.reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {});
+    const settingsMap = settings.reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {} as Record<string, string>);
     
     // Nếu được đặc cách, trả về true luôn bất chấp cài đặt chung
     const isAllowed = override || (settingsMap['allow_unit_report_edit'] ?? 'true') === 'true';
