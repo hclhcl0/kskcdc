@@ -108,13 +108,13 @@ export default function GuidePage() {
                 <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2 text-sm">
                   <Edit2 className="w-4 h-4 text-blue-500" /> Chỉnh sửa số liệu
                 </h4>
-                <p className="text-sm text-slate-600">Nhấn biểu tượng <strong>bút chì</strong> để sửa trực tiếp. Chỉ được sửa trong <strong>ngày nộp và ngày hôm sau</strong>. Quá hạn → nút bị khóa.</p>
+                <p className="text-sm text-slate-600">Nhấn biểu tượng <strong>bút chì</strong> để sửa trực tiếp. Chỉ được sửa trong <strong>thời gian quy định (mặc định 48h sau khi nộp)</strong>. Quá hạn → nút bị khóa.</p>
               </div>
               <div className="border border-slate-200 rounded-xl p-4">
                 <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2 text-sm">
                   <Trash2 className="w-4 h-4 text-red-500" /> Xóa báo cáo
                 </h4>
-                <p className="text-sm text-slate-600">Nhấn biểu tượng <strong>thùng rác</strong> để xóa. Thời hạn tương tự tính năng sửa: chỉ trong <strong>ngày nộp và ngày hôm sau</strong>.</p>
+                <p className="text-sm text-slate-600">Nhấn biểu tượng <strong>thùng rác</strong> để xóa. Thời hạn tương tự tính năng sửa: trong <strong>giới hạn giờ quy định</strong>.</p>
               </div>
             </div>
             <NoteBox type="info">
@@ -243,6 +243,15 @@ export default function GuidePage() {
             </ul>
           </SubSection>
 
+          {/* 2.8 Cài đặt chung */}
+          <SubSection icon={<ShieldCheck className="w-5 h-5 text-teal-600" />} title="2.8. Cài đặt Hệ thống">
+            <p className="text-sm text-slate-600 mb-3">Truy cập <strong>Quản trị → Cài đặt chung</strong>.</p>
+            <ul className="list-disc pl-5 text-slate-600 space-y-2 text-sm leading-relaxed">
+              <li><strong>Khóa toàn cục:</strong> Admin có thể chủ động khóa/mở quyền sửa/xóa báo cáo của toàn bộ các đơn vị để phục vụ việc chốt số liệu.</li>
+              <li><strong>Giới hạn thời gian tự sửa:</strong> Thiết lập số giờ tối đa (ví dụ 48h) mà các đơn vị được phép tự sửa báo cáo sau khi nộp.</li>
+            </ul>
+          </SubSection>
+
         </Section>
 
         {/* ===== PHẦN 3: QUY ĐỊNH CHUNG ===== */}
@@ -270,8 +279,8 @@ export default function GuidePage() {
                 </tr>
                 <tr className="hover:bg-slate-50/50">
                   <td className="px-4 py-3 font-medium text-slate-700">Sửa / xóa (đơn vị)</td>
-                  <td className="px-4 py-3 text-slate-600">Trong ngày nộp + ngày hôm sau</td>
-                  <td className="px-4 py-3 text-slate-600">Trong ngày nộp + ngày hôm sau</td>
+                  <td className="px-4 py-3 text-slate-600">Trong thời hạn do Admin cài đặt (Mặc định 48h)</td>
+                  <td className="px-4 py-3 text-slate-600">Trong thời hạn do Admin cài đặt (Mặc định 48h)</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">
                   <td className="px-4 py-3 font-medium text-slate-700">Sửa / xóa (Admin)</td>
