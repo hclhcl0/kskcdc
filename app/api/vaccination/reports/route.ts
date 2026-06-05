@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     const role = (session.user as any)?.role;
     const isAdmin = role === 'admin' || role === 'admin_cdc';
     const don_vi = body.don_vi || session.user.name || 'Unknown';
-    const { ngay_tiem, vaccineId, campaignId } = body;
+    const { ngay_tiem, vaccineId, campaignId, co_so_y_te, nguoi_nop_bao_cao } = body;
 
     if (!isAdmin) {
       const existing = await prisma.vaccinationReport.findFirst({
@@ -41,7 +41,8 @@ export async function POST(request: Request) {
     // Add report
     const newReport = await addVaccinationReport({
       ...body,
-      don_vi
+      don_vi,
+      co_so_y_te: !isAdmin && (session.user as any).facilityName ? (session.user as any).facilityName : (body.co_so_y_te || ''),
     });
 
     return NextResponse.json(newReport, { status: 201 });

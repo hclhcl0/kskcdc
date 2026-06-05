@@ -105,18 +105,20 @@ export default function ReportForm() {
   useEffect(() => {
     if (session?.user?.name && (session.user as any).role !== 'admin' && (session.user as any).role !== 'admin_cdc') {
       setValue('don_vi', session.user.name);
+      if ((session.user as any).facilityName) {
+        setValue('co_so_y_te', (session.user as any).facilityName);
+      }
     }
   }, [session, setValue]);
 
   useEffect(() => {
-    if (watchedDonVi) {
-      if (UNIT_TO_FACILITY[watchedDonVi]) {
-        setValue('co_so_y_te', UNIT_TO_FACILITY[watchedDonVi]);
+    if (watchedDonVi && accounts.length > 0) {
+      const selectedAccount = accounts.find(a => a.displayName === watchedDonVi || a.username === watchedDonVi);
+      if (selectedAccount && selectedAccount.facilityName) {
+        setValue('co_so_y_te', selectedAccount.facilityName);
       }
-    } else {
-      setValue('co_so_y_te', '');
     }
-  }, [watchedDonVi, setValue]);
+  }, [watchedDonVi, accounts, setValue]);
 
   const onSubmit = async (data: HealthReportFormValues) => {
     setSubmitStatus('loading');

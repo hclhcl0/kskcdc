@@ -37,6 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: account.username + '@cdcdanang.vn',
           role: account.role,
           username: account.username,
+          facilityName: account.facilityName,
         };
       },
     }),

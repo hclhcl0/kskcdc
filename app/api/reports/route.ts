@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
     const newReport: HealthReport = {
       id: uuidv4(),
       ...parsed.data,
+      co_so_y_te: !isAdmin && (session.user as any).facilityName ? (session.user as any).facilityName : parsed.data.co_so_y_te,
       created_at: new Date().toISOString(),
     };
 

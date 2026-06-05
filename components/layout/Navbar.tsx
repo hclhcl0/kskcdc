@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Activity, LayoutDashboard, FileText, Menu, X,
-  LogOut, ChevronDown, Users, Target, Settings, BookOpen
+  LogOut, ChevronDown, Users, Target, Settings, BookOpen, Building2
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { signOut, useSession } from 'next-auth/react';
@@ -25,6 +25,7 @@ const adminMenuLinks = [
   { href: '/vaccination/campaigns', label: 'Quản lý Đợt tiêm',   icon: Activity  },
   { href: '/benchmarks',            label: 'Xem chỉ tiêu',        icon: Target    },
   { href: '/accounts',              label: 'Tài khoản',            icon: Users     },
+  { href: '/admin/facilities',      label: 'Cơ sở y tế',          icon: Building2 },
   { href: '/admin/demographics',    label: 'Cài đặt Đối tượng',   icon: Settings  },
   { href: '/admin/settings',        label: 'Cài đặt chung',       icon: Settings  },
 ];

@@ -218,12 +218,22 @@ export default function AccountsTable({ accounts: initialAccounts }: AccountsTab
               <tr key={account.username} className="hover:bg-blue-50/30 transition-colors">
                 <td className="px-5 py-3.5 text-slate-400 text-xs">{idx + 1}</td>
                 <td className="px-5 py-3.5">
-                  <span className="font-medium text-slate-800">{account.displayName}</span>
-                  {account.allowEditOverride && (
-                    <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 uppercase" title="Được đặc cách">
-                      Đặc cách
-                    </span>
-                  )}
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-slate-800">{account.displayName}</span>
+                      {account.allowEditOverride && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 uppercase" title="Được đặc cách">
+                          Đặc cách
+                        </span>
+                      )}
+                    </div>
+                    {account.facilityName && (
+                      <span className="text-[11px] text-slate-500 flex items-center gap-1">
+                        <Building2 className="w-3 h-3" />
+                        {account.facilityName}
+                      </span>
+                    )}
+                  </div>
                 </td>
                 <td className="px-5 py-3.5">
                   <div className="flex items-center gap-2">

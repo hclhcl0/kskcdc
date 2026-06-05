@@ -19,7 +19,8 @@ export async function GET(request: Request) {
       role: a.role,
       status: a.status,
       orgType: a.orgType,
-      allowEditOverride: a.allowEditOverride
+      allowEditOverride: a.allowEditOverride,
+      facilityName: a.facilityName
     }));
 
     return NextResponse.json(safeAccounts);
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { username, displayName, password, role: accountRole, status, orgType, allowEditOverride } = body;
+    const { username, displayName, password, role: accountRole, status, orgType, allowEditOverride, facilityName } = body;
 
     if (!username || !displayName || !password || !accountRole) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -54,10 +55,11 @@ export async function POST(request: Request) {
       role: accountRole,
       status: status || 'approved',
       orgType: orgType || '',
-      allowEditOverride: allowEditOverride || false
+      allowEditOverride: allowEditOverride || false,
+      facilityName: facilityName || null
     });
 
-    return NextResponse.json({ success: true, account: { username: newAcc.username, displayName: newAcc.displayName, role: newAcc.role, status: newAcc.status, orgType: newAcc.orgType, allowEditOverride: newAcc.allowEditOverride } });
+    return NextResponse.json({ success: true, account: { username: newAcc.username, displayName: newAcc.displayName, role: newAcc.role, status: newAcc.status, orgType: newAcc.orgType, allowEditOverride: newAcc.allowEditOverride, facilityName: newAcc.facilityName } });
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
@@ -72,7 +74,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { username, displayName, password, role: accountRole, status, orgType, allowEditOverride } = body;
+    const { username, displayName, password, role: accountRole, status, orgType, allowEditOverride, facilityName } = body;
 
     if (!username) {
       return NextResponse.json({ error: 'Username is required' }, { status: 400 });
@@ -85,13 +87,14 @@ export async function PUT(request: Request) {
     if (status) updates.status = status;
     if (orgType !== undefined) updates.orgType = orgType;
     if (allowEditOverride !== undefined) updates.allowEditOverride = allowEditOverride;
+    if (facilityName !== undefined) updates.facilityName = facilityName === '' ? null : facilityName;
 
     const updated = await updateAccount(username, updates);
     if (!updated) {
       return NextResponse.json({ error: 'Account not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, account: { username: updated.username, displayName: updated.displayName, role: updated.role, status: updated.status, orgType: updated.orgType, allowEditOverride: updated.allowEditOverride } });
+    return NextResponse.json({ success: true, account: { username: updated.username, displayName: updated.displayName, role: updated.role, status: updated.status, orgType: updated.orgType, allowEditOverride: updated.allowEditOverride, facilityName: updated.facilityName } });
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

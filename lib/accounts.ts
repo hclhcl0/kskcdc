@@ -9,6 +9,7 @@ export interface Account {
   status?: string;
   orgType?: string;
   allowEditOverride?: boolean;
+  facilityName?: string | null;
 }
 
 // Lấy tất cả tài khoản
@@ -21,6 +22,7 @@ export async function getAccounts(): Promise<Account[]> {
     status: a.status,
     orgType: a.orgType,
     allowEditOverride: a.allowEditOverride,
+    facilityName: a.facilityName,
     // We omit password here for safety, unless it's needed for the admin view.
     // The previous implementation returned everything.
     password: a.password
@@ -59,6 +61,7 @@ export async function addAccount(account: Account): Promise<Account> {
       status: account.status || 'approved',
       orgType: account.orgType || '',
       allowEditOverride: account.allowEditOverride || false,
+      facilityName: account.facilityName || null,
     }
   });
   return newAccount;
@@ -76,6 +79,7 @@ export async function updateAccount(username: string, updates: Partial<Account>)
         ...(updates.status && { status: updates.status }),
         ...(updates.orgType !== undefined && { orgType: updates.orgType }),
         ...(updates.allowEditOverride !== undefined && { allowEditOverride: updates.allowEditOverride }),
+        ...(updates.facilityName !== undefined && { facilityName: updates.facilityName }),
       }
     });
     return updated;

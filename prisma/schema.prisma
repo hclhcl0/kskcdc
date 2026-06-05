@@ -15,6 +15,7 @@ model Account {
   status      String   @default("approved") // 'pending', 'approved', 'rejected'
   orgType     String   @default("") // 'school', 'military', 'enterprise', 'other', or empty for defaults
   allowEditOverride Boolean @default(false)
+  facilityName String? 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -184,5 +185,12 @@ model VaccinationReportData {
 model SystemSetting {
   key       String   @id // e.g., 'allow_unit_report_edit'
   value     String   // e.g., 'true', 'false'
+  updatedAt DateTime @updatedAt
+}
+
+model Facility {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
