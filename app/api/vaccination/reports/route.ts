@@ -52,7 +52,6 @@ export async function POST(request: Request) {
       ngay_tiem,
       nguoi_nop_bao_cao,
       don_vi,
-      co_so_y_te: !isAdmin && (session.user as any).facilityName ? (session.user as any).facilityName : (body.co_so_y_te || ''),
       details
     });
 
