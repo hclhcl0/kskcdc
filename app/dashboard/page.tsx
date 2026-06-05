@@ -62,39 +62,7 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* City-wide Group Percentages */}
-      {progress.systemGroupStats && progress.systemGroupStats.length > 0 && (
-        <div className="mb-8 animate-fade-in">
-          <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <Target className="w-5 h-5 text-purple-600" />
-            Tỷ lệ Hoàn thành theo Nhóm đối tượng (Toàn Thành phố)
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {progress.systemGroupStats.map((stat) => (
-              <div key={stat.key} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xl">{stat.icon}</span>
-                  <span className="font-semibold text-slate-700 text-sm truncate">{stat.label}</span>
-                </div>
-                <div className="flex items-end justify-between mb-2">
-                  <div>
-                    <p className="text-2xl font-bold text-blue-700">{stat.target ? `${stat.pct ?? 0}%` : '--%'}</p>
-                    <p className="text-xs text-slate-500">
-                      {stat.achieved.toLocaleString('vi-VN')} / {stat.target ? stat.target.toLocaleString('vi-VN') : '0 (chưa có chỉ tiêu)'}
-                    </p>
-                  </div>
-                </div>
-                <div className="w-full bg-slate-100 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${stat.pct && stat.pct >= 100 ? 'bg-emerald-500' : 'bg-blue-500'}`}
-                    style={{ width: `${Math.min(stat.pct ?? 0, 100)}%` }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 animate-fade-in">
