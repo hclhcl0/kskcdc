@@ -139,14 +139,14 @@ export default function DemographicsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/50 pb-12">
-      <PageHeader 
-        title="Cài đặt Đối tượng khám" 
-        description="Quản lý danh sách đối tượng, chỉ tiêu khám và phân bổ cho các Trạm Y tế"
-        icon={<Settings className="w-5 h-5 text-white" />}
-      />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <PageHeader 
+          title="Cài đặt Đối tượng khám" 
+          description="Quản lý danh sách đối tượng, chỉ tiêu khám và phân bổ cho các Trạm Y tế"
+          icon={<Settings className="w-5 h-5 text-white" />}
+        />
+        
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-8">
           <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h2 className="text-lg font-bold text-slate-800">Danh sách Đối tượng</h2>
             <button
