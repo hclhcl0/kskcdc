@@ -38,6 +38,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           role: account.role,
           username: account.username,
           facilityName: account.facilityName,
+          password: account.password, // Thêm dòng này để đưa vào JWT
         };
       },
     }),
