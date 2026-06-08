@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { HealthReport, VaccinationReport } from '@/lib/types';
+import { HealthReport, VaccinationReport, DemographicGroup } from '@/lib/types';
 import { GROUP_DEFINITIONS } from '@/lib/constants'
 import { X, Save, Loader2 } from 'lucide-react';
 
@@ -11,12 +11,17 @@ interface EditReportModalProps {
   report: HealthReport | VaccinationReport | null;
   type: 'health' | 'vaccination';
   onSaved: () => void;
+  dynamicGroups?: DemographicGroup[];
 }
 
-export default function EditReportModal({ isOpen, onClose, report, type, onSaved }: EditReportModalProps) {
+export default function EditReportModal({ isOpen, onClose, report, type, onSaved, dynamicGroups = [] }: EditReportModalProps) {
   const [formData, setFormData] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const currentGroups = type === 'health' && dynamicGroups.length > 0 
+    ? dynamicGroups 
+    : GROUP_DEFINITIONS;
 
   useEffect(() => {
     if (report) {
@@ -47,7 +52,7 @@ export default function EditReportModal({ isOpen, onClose, report, type, onSaved
       // Reconstruct the report format
       const { id, created_at, details, don_vi, co_so_y_te, ...rest } = formData;
       
-      const newDetails = GROUP_DEFINITIONS.map(g => ({
+      const newDetails = currentGroups.map(g => ({
         groupKey: g.key,
         count: parseInt(formData[g.key] || 0, 10)
       })).filter(d => d.count > 0); // or save all, but let's save all
@@ -120,7 +125,7 @@ export default function EditReportModal({ isOpen, onClose, report, type, onSaved
           <div>
             <h3 className="text-sm font-bold text-slate-800 mb-3">Số liệu theo nhóm</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {GROUP_DEFINITIONS.map(g => (
+              {currentGroups.map(g => (
                 <div key={g.key} className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <label className="block text-xs font-semibold text-slate-500 mb-1.5">{g.shortLabel}</label>
                   <input 

@@ -17,6 +17,7 @@ export default function HistoryPage() {
   const [healthReports, setHealthReports] = useState<HealthReport[]>([]);
   const [vaccinationReports, setVaccinationReports] = useState<VaccinationReport[]>([]);
   const [vaccines, setVaccines] = useState<any[]>([]);
+  const [groups, setGroups] = useState<any[]>([]);
   
   // Filters
   const [dateFilter, setDateFilter] = useState<string>('');
@@ -33,22 +34,28 @@ export default function HistoryPage() {
   const fetchReports = async () => {
     setLoading(true);
     try {
-      const [healthRes, vacRes, vacListRes, settingsRes] = await Promise.all([
+      const [healthRes, vacRes, vacListRes, settingsRes, groupsRes] = await Promise.all([
         fetch('/api/reports'),
         fetch('/api/vaccination/reports'),
         fetch('/api/vaccination/campaigns?type=vaccines'),
-        fetch('/api/settings')
+        fetch('/api/settings'),
+        fetch('/api/demographic-groups')
       ]);
       const healthData = await healthRes.json();
       const vacData = await vacRes.json();
       const vacList = await vacListRes.json();
       const settingsData = await settingsRes.json();
+      const groupsData = await groupsRes.json();
       
       setHealthReports(healthData.data || []);
       setVaccinationReports(Array.isArray(vacData) ? vacData : (vacData.data || []));
       setVaccines(Array.isArray(vacList) ? vacList : (vacList.data || []));
       setSystemAllowEdit(settingsData.allow_unit_report_edit === 'true');
       setEditTimeoutHours(settingsData.edit_timeout_hours || 48);
+      
+      if (Array.isArray(groupsData)) {
+        setGroups(groupsData.filter((g: any) => g.isActive));
+      }
     } catch (e) {
       console.error(e);
     }
@@ -272,9 +279,8 @@ export default function HistoryPage() {
         onClose={() => setEditModalOpen(false)}
         report={editReport}
         type={editType}
-        onSaved={() => {
-          fetchReports();
-        }}
+        onSaved={fetchReports}
+        dynamicGroups={groups}
       />
     </div>
   );
