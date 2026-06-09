@@ -219,24 +219,11 @@ export async function getProgressDashboard(): Promise<ProgressDashboard> {
   const unitsNoBenchmark: string[] = [];
   const unitsWith0Reports: string[] = [];
 
-  // Build canonical unit list from benchmarks + reports (don_vi is the consistent key)
-  // Then add any unit accounts whose facilityName (or username) is not yet in the set
-  const unitNames = new Set<string>();
-  benchmarks.forEach(b => unitNames.add(b.don_vi));
-  for (const r of reports) {
-    unitNames.add(r.don_vi);
-  }
-  // Add accounts that have a facilityName matching none of the existing don_vi values
-  // This handles newly registered units that haven't submitted reports yet
-  unitAccounts.forEach(a => {
-    const canonicalName = a.facilityName || a.username;
-    if (!unitNames.has(canonicalName)) {
-      unitNames.add(canonicalName);
-    }
-  });
-
-  const units: UnitProgress[] = Array.from(unitNames).map((don_vi) => {
-    const acc = unitAccounts.find(a => a.facilityName === don_vi || a.username === don_vi);
+  // Dùng danh sách tài khoản unit làm nguồn chuẩn duy nhất.
+  // Mỗi tài khoản có facilityName là tên đơn vị khớp với don_vi trong báo cáo/chỉ tiêu.
+  // Nếu không có facilityName thì fallback về username.
+  const units: UnitProgress[] = unitAccounts.map((acc) => {
+    const don_vi = acc.facilityName || acc.username;
     const bm = benchmarks.find(b => b.don_vi === don_vi);
     const unitData = achievedMap.get(don_vi);
 
