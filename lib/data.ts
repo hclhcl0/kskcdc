@@ -219,11 +219,19 @@ export async function getProgressDashboard(): Promise<ProgressDashboard> {
   const unitsNoBenchmark: string[] = [];
   const unitsWith0Reports: string[] = [];
 
-  // Dùng danh sách tài khoản unit làm nguồn chuẩn duy nhất.
-  // Mỗi tài khoản có facilityName là tên đơn vị khớp với don_vi trong báo cáo/chỉ tiêu.
-  // Nếu không có facilityName thì fallback về username.
-  const units: UnitProgress[] = unitAccounts.map((acc) => {
-    const don_vi = acc.facilityName || acc.username;
+  // Nguồn chuẩn: don_vi từ báo cáo + chỉ tiêu (đây là key nhất quán).
+  // Tài khoản unit được dùng để tra thêm thông tin cơ sở y tế cho những đơn vị chưa có báo cáo.
+  const unitNames = new Set<string>();
+  benchmarks.forEach(b => unitNames.add(b.don_vi));
+  for (const r of reports) {
+    unitNames.add(r.don_vi);
+  }
+
+  const units: UnitProgress[] = Array.from(unitNames).map((don_vi) => {
+    // Tìm tài khoản khớp: ưu tiên facilityName, fallback về username
+    const acc = unitAccounts.find(a =>
+      (a.facilityName && a.facilityName === don_vi) || a.username === don_vi
+    );
     const bm = benchmarks.find(b => b.don_vi === don_vi);
     const unitData = achievedMap.get(don_vi);
 
