@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Account } from '@/lib/accounts';
-import { Facility } from '@prisma/client';
-import { X, Save, Loader2, Building2 } from 'lucide-react';
+import { X, Save, Loader2 } from 'lucide-react';
 
 interface UserModalProps {
   isOpen: boolean;
@@ -23,28 +22,6 @@ export default function UserModal({ isOpen, onClose, user, onSaved }: UserModalP
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [facilities, setFacilities] = useState<Facility[]>([]);
-  const [loadingFacilities, setLoadingFacilities] = useState(false);
-
-  useEffect(() => {
-    async function fetchFacilities() {
-      setLoadingFacilities(true);
-      try {
-        const res = await fetch('/api/facilities');
-        if (res.ok) {
-          const data = await res.json();
-          setFacilities(data);
-        }
-      } catch (err) {
-        console.error('Failed to fetch facilities', err);
-      } finally {
-        setLoadingFacilities(false);
-      }
-    }
-    if (isOpen) {
-      fetchFacilities();
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     if (user) {
@@ -185,26 +162,7 @@ export default function UserModal({ isOpen, onClose, user, onSaved }: UserModalP
             </select>
           </div>
 
-          {formData.role === 'unit' && (
-            <div>
-              <label className="block text-sm font-semibold text-slate-600 mb-1">Cơ sở y tế phụ trách</label>
-              <select 
-                name="facilityName" 
-                value={formData.facilityName} 
-                onChange={handleChange} 
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
-              >
-                <option value="">-- Chưa chọn Cơ sở y tế --</option>
-                {loadingFacilities ? (
-                  <option disabled>Đang tải...</option>
-                ) : (
-                  facilities.map(f => (
-                    <option key={f.id} value={f.name}>{f.name}</option>
-                  ))
-                )}
-              </select>
-            </div>
-          )}
+
 
           {formData.role === 'unit' && (
             <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-xl mt-4">
