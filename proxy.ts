@@ -9,6 +9,11 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
   const session = req.auth;
 
+  // API tích hợp bên thứ ba - bypass check session ở middleware (API tự check token)
+  if (pathname.startsWith('/api/external')) {
+    return NextResponse.next();
+  }
+
   // Public routes - không cần đăng nhập
   const publicRoutes = ['/login', '/register'];
   if (publicRoutes.includes(pathname)) {
