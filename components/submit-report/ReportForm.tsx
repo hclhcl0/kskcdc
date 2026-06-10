@@ -75,7 +75,6 @@ export default function ReportForm() {
     handleSubmit,
     reset,
     setValue,
-    watch,
     control,
     formState: { errors },
   } = useForm<HealthReportFormValues>({
@@ -100,25 +99,12 @@ export default function ReportForm() {
     }
   }, [groups, replace]);
 
-  const watchedDonVi = watch('don_vi');
 
   useEffect(() => {
     if (session?.user?.name && (session.user as any).role !== 'admin' && (session.user as any).role !== 'admin_cdc') {
       setValue('don_vi', session.user.name);
-      if ((session.user as any).facilityName) {
-        setValue('co_so_y_te', (session.user as any).facilityName);
-      }
     }
   }, [session, setValue]);
-
-  useEffect(() => {
-    if (watchedDonVi && accounts.length > 0) {
-      const selectedAccount = accounts.find(a => a.displayName === watchedDonVi || a.username === watchedDonVi);
-      if (selectedAccount && selectedAccount.facilityName) {
-        setValue('co_so_y_te', selectedAccount.facilityName);
-      }
-    }
-  }, [watchedDonVi, accounts, setValue]);
 
   const onSubmit = async (data: HealthReportFormValues) => {
     setSubmitStatus('loading');
@@ -233,35 +219,6 @@ export default function ReportForm() {
               <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" />
                 {errors.don_vi.message}
-              </p>
-            )}
-          </div>
-
-          {/* Co so y te */}
-          <div>
-            <label htmlFor="co_so_y_te" className="block text-sm font-medium text-slate-700 mb-1.5">
-              <span className="flex items-center gap-1.5">
-                <Hospital className="w-3.5 h-3.5 text-slate-400" />
-                Cơ sở y tế phụ trách
-                <span className="text-red-500">*</span>
-              </span>
-            </label>
-            <select
-              id="co_so_y_te"
-              className={inputCls(!!errors.co_so_y_te)}
-              {...register('co_so_y_te')}
-            >
-              <option value="">-- Chọn cơ sở y tế phụ trách --</option>
-              {FACILITIES.map((facility) => (
-                <option key={facility} value={facility}>
-                  {facility}
-                </option>
-              ))}
-            </select>
-            {errors.co_so_y_te && (
-              <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" />
-                {errors.co_so_y_te.message}
               </p>
             )}
           </div>

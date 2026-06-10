@@ -44,7 +44,7 @@ export default function ReportsTable({ data }: ReportsTableProps) {
             <tr className="bg-slate-50 text-left">
               <th className="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">STT</th>
               <th className="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Đơn vị báo cáo</th>
-              <th className="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Cơ sở y tế</th>
+
               <th className="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Ngày khám</th>
               <th className="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide text-right">Số báo cáo</th>
               <th className="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide text-right">Tổng lượt khám</th>
@@ -63,7 +63,7 @@ export default function ReportsTable({ data }: ReportsTableProps) {
                     />
                   </div>
                 </td>
-                <td className="px-5 py-4 text-slate-500">{row.co_so_y_te}</td>
+
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-1.5 text-slate-500">
                     <CalendarDays className="w-3.5 h-3.5" />
@@ -99,7 +99,7 @@ export default function ReportsTable({ data }: ReportsTableProps) {
                   </span>
                 </div>
                 <p className="font-semibold text-slate-800 text-sm">{row.don_vi}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{row.co_so_y_te}</p>
+
                 <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-1">
                   <CalendarDays className="w-3 h-3" />
                   {formatDate(row.ngay_kham)}

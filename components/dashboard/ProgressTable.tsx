@@ -40,7 +40,7 @@ export default function ProgressTable({ data }: ProgressTableProps) {
 
   const filteredUnits = data.units.filter((u) => {
     const matchSearch = u.don_vi.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchFacility = filterFacility ? u.co_so_y_te === filterFacility : true;
+    const matchFacility = true; // Đã bỏ lọc theo Cơ sở y tế
     const matchUnit = filterUnit ? u.don_vi === filterUnit : true;
     
     let matchStatus = true;
@@ -69,7 +69,6 @@ export default function ProgressTable({ data }: ProgressTableProps) {
   const totalPages = Math.max(1, Math.ceil(filteredUnits.length / itemsPerPage));
   const currentUnits = filteredUnits.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const facilities = Array.from(new Set(data.units.map(u => u.co_so_y_te).filter(Boolean))).sort();
   const unitsList = Array.from(new Set(data.units.map(u => u.don_vi).filter(Boolean))).sort();
 
   const handleExport = () => {
@@ -142,19 +141,7 @@ export default function ProgressTable({ data }: ProgressTableProps) {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Lọc theo Cơ sở y tế</label>
-              <select
-                value={filterFacility}
-                onChange={(e) => setFilterFacility(e.target.value)}
-                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white outline-none focus:border-blue-500"
-              >
-                <option value="">Tất cả Cơ sở y tế</option>
-                {facilities.map(f => (
-                  <option key={f} value={f}>{f}</option>
-                ))}
-              </select>
-            </div>
+
             <div>
               <label className="block text-xs font-semibold text-slate-600 mb-1.5">Trạng thái nộp</label>
               <select
@@ -244,7 +231,7 @@ export default function ProgressTable({ data }: ProgressTableProps) {
                   <h3 className="font-bold text-slate-800 text-base sm:text-lg flex items-center gap-2">
                     {row.don_vi}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-1">{row.co_so_y_te}</p>
+
                   <div className="mt-2 flex items-center gap-2 flex-wrap">
                     {filterDate && filterStatus ? (
                       // Show per-date status when date filter is active

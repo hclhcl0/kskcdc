@@ -8,10 +8,7 @@ export const healthReportSchema = z.object({
   ngay_kham: z
     .string()
     .min(1, 'Vui lòng chọn ngày thực hiện khám'),
-  co_so_y_te: z
-    .string()
-    .min(1, 'Vui lòng nhập cơ sở y tế phụ trách')
-    .max(200, 'Tên cơ sở y tế không được vượt quá 200 ký tự'),
+  co_so_y_te: z.string(),
   nguoi_nop_bao_cao: z
     .string()
     .min(2, 'Vui lòng nhập họ và tên người nộp báo cáo')
