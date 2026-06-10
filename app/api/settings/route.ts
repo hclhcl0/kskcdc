@@ -8,6 +8,8 @@ export async function GET() {
     const session = await auth();
     let override = false;
     const role = (session?.user as any)?.role;
+    const isAdmin = role === 'admin' || role === 'admin_cdc';
+
     if (role === 'unit' && session?.user?.name) {
       const acc = await prisma.account.findUnique({ where: { username: session.user.name } });
       if (acc?.allowEditOverride) {
@@ -21,10 +23,16 @@ export async function GET() {
     // Nếu được đặc cách, trả về true luôn bất chấp cài đặt chung
     const isAllowed = override || (settingsMap['allow_unit_report_edit'] ?? 'true') === 'true';
 
-    return NextResponse.json({
+    const responseData: any = {
       allow_unit_report_edit: isAllowed ? 'true' : 'false',
       edit_timeout_hours: parseInt(settingsMap['edit_timeout_hours'] || '48', 10)
-    });
+    };
+
+    if (isAdmin) {
+      responseData.external_api_key = settingsMap['external_api_key'] || process.env.EXTERNAL_API_KEY || '';
+    }
+
+    return NextResponse.json(responseData);
   } catch (error) {
     return NextResponse.json({ error: 'Server Error' }, { status: 500 });
   }

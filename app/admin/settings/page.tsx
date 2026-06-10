@@ -11,6 +11,7 @@ export default function SystemSettingsPage() {
   const [allowEdit, setAllowEdit] = useState(true);
   const [timeoutHours, setTimeoutHours] = useState('48');
   const [backingUp, setBackingUp] = useState(false);
+  const [externalApiKey, setExternalApiKey] = useState('');
 
   useEffect(() => {
     fetch('/api/settings')
@@ -18,9 +19,19 @@ export default function SystemSettingsPage() {
       .then(data => {
         setAllowEdit(data.allow_unit_report_edit === 'true');
         setTimeoutHours(data.edit_timeout_hours?.toString() || '48');
+        setExternalApiKey(data.external_api_key || '');
         setLoading(false);
       });
   }, []);
+
+  const generateRandomApiKey = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = 'cdc_';
+    for (let i = 0; i < 32; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setExternalApiKey(result);
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -30,7 +41,8 @@ export default function SystemSettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           allow_unit_report_edit: allowEdit ? 'true' : 'false',
-          edit_timeout_hours: timeoutHours
+          edit_timeout_hours: timeoutHours,
+          external_api_key: externalApiKey
         }),
       });
       if (res.ok) {
@@ -128,6 +140,32 @@ export default function SystemSettingsPage() {
                 className="w-20 px-3 py-2 text-center font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
               />
               <span className="text-sm font-medium text-slate-500">Giờ</span>
+            </div>
+          </div>
+
+          {/* API Key Integration Block */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-slate-100">
+            <div>
+              <h3 className="font-semibold text-slate-800 text-lg">Khóa tích hợp dữ liệu (EXTERNAL_API_KEY)</h3>
+              <p className="text-sm text-slate-500 mt-1 max-w-xl">
+                Mã bảo mật được dùng để phần mềm khác kết nối và lấy dữ liệu của hệ thống thông qua API (`X-API-Key`).
+              </p>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <input
+                type="text"
+                value={externalApiKey}
+                onChange={(e) => setExternalApiKey(e.target.value)}
+                placeholder="Chưa có mã khóa"
+                className="px-4 py-2 font-mono text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none w-full sm:w-64"
+              />
+              <button
+                type="button"
+                onClick={generateRandomApiKey}
+                className="px-3 py-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl transition-colors whitespace-nowrap"
+              >
+                Tự sinh mã
+              </button>
             </div>
           </div>
 

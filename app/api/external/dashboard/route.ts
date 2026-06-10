@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProgressDashboard, getDashboardStats } from '@/lib/data';
+import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +27,8 @@ export async function GET(request: NextRequest) {
     const apiKey = request.headers.get('x-api-key') || 
                    request.headers.get('Authorization')?.replace('Bearer ', '');
                    
-    const expectedKey = process.env.EXTERNAL_API_KEY;
+    const dbSetting = await prisma.systemSetting.findUnique({ where: { key: 'external_api_key' } });
+    const expectedKey = dbSetting?.value || process.env.EXTERNAL_API_KEY;
 
     if (!expectedKey) {
       return NextResponse.json(
