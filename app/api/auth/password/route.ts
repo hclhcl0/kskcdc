@@ -20,7 +20,8 @@ export async function POST(request: Request) {
       }
 
       // Find user to verify old password
-      const account = await findAccountByUsername(user.name || '');
+      const username = (user as { username?: string }).username || user.name || '';
+      const account = await findAccountByUsername(username);
       if (!account) {
         return NextResponse.json({ error: 'Không tìm thấy tài khoản' }, { status: 404 });
       }
@@ -39,7 +40,8 @@ export async function POST(request: Request) {
     
     if (action === 'reset') {
       // Only admin can reset
-      const account = await findAccountByUsername(user.name || '');
+      const adminUsername = (user as { username?: string }).username || user.name || '';
+      const account = await findAccountByUsername(adminUsername);
       if (account?.role !== 'admin' && account?.role !== 'admin_cdc') {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
