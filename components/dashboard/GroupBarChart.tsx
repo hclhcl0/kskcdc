@@ -36,16 +36,17 @@ export default function GroupBarChart({ data }: GroupBarChartProps) {
   } satisfies ChartConfig;
 
   return (
-    <div className="card p-5 flex flex-col justify-between h-full">
-      <div className="flex items-center justify-between mb-2">
+    <div className="card p-5 flex flex-col h-full">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-base font-bold text-slate-800">Thống kê theo nhóm đối tượng</h2>
           <p className="text-xs text-slate-400 mt-0.5">Tổng hợp toàn hệ thống</p>
         </div>
       </div>
       
-      <ChartContainer config={chartConfig} className="w-full h-[420px]">
-        <BarChart
+      <div className="flex-1 w-full min-h-[400px]">
+        <ChartContainer config={chartConfig} className="w-full h-full aspect-auto">
+          <BarChart
           accessibilityLayer
           layout="vertical"
           data={chartData}
@@ -79,6 +80,7 @@ export default function GroupBarChart({ data }: GroupBarChartProps) {
           </Bar>
         </BarChart>
       </ChartContainer>
+      </div>
     </div>
   );
 }
