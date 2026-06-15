@@ -3,10 +3,10 @@ import { Phone, Award, Wrench } from 'lucide-react';
 
 export default function SupportBar() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 text-slate-100 py-2 z-50 border-t border-slate-800 shadow-2xl backdrop-blur-sm select-none h-9 flex items-center">
-      <div className="w-full mx-auto overflow-hidden relative flex items-center">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-7xl px-4 z-50 pointer-events-none">
+      <div className="bg-slate-900/95 text-slate-100 py-1.5 px-3 rounded-full border border-slate-800 shadow-2xl backdrop-blur-sm select-none h-9 flex items-center overflow-hidden relative pointer-events-auto max-w-3xl mx-auto">
         {/* Label to keep the "Hỗ trợ" header fixed on the left */}
-        <div className="absolute left-0 top-0 bottom-0 bg-slate-950 px-3 z-50 flex items-center font-bold text-xs text-emerald-400 border-r border-slate-800 shadow-md">
+        <div className="absolute left-0 top-0 bottom-0 bg-slate-950 pl-4 pr-3 flex items-center font-bold text-[10px] sm:text-xs text-emerald-400 border-r border-slate-800 rounded-l-full shadow-md">
           <Phone className="w-3.5 h-3.5 mr-1 animate-pulse" />
           HỖ TRỢ
         </div>
