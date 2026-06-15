@@ -9,6 +9,9 @@ export default function Footer() {
         <p className="text-xs text-slate-500">
           Hệ thống Báo cáo nhanh Khám Sức khỏe Toàn dân
         </p>
+        <p className="text-xs text-slate-500 font-medium pt-1">
+          Hỗ trợ: Chuyên môn BS Nguyễn Trí Thức, SĐT: 0399.016.244 ; Kỹ thuật KS. Hồ Công Lượng, SĐT: 0935.593.353
+        </p>
       </div>
     </footer>
   );
