@@ -1,8 +1,7 @@
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import { getProgressDashboard, getAllReports, getUnitActiveGroups } from '@/lib/data';
-import { getBenchmarks } from '@/lib/benchmarks_db';
+import { getUnitProgress, getReportsByUnit, getUnitActiveGroups } from '@/lib/data';
 import { Activity, Target, TrendingUp, Calendar, CheckCircle2 } from 'lucide-react';
 import HistoryChart from '@/components/dashboard/HistoryChart';
 import type { Metadata } from 'next';
@@ -18,16 +17,12 @@ export default async function MyDashboardPage() {
 
   if (role !== 'unit' || !unitName) redirect('/login');
 
-  // Lấy dữ liệu báo cáo của đơn vị
-  const [reports, myBenchmarks, activeGroups] = await Promise.all([
-    getAllReports(),
-    getBenchmarks(),
+  // Lấy dữ liệu báo cáo và tiến độ riêng của đơn vị (Đã tối ưu hóa tải CSDL)
+  const [reports, myProgress, activeGroups] = await Promise.all([
+    getReportsByUnit(unitName),
+    getUnitProgress(unitName),
     getUnitActiveGroups(unitName)
   ]);
-
-  // Lấy progress hiện tại
-  const progressData = await getProgressDashboard();
-  const myProgress = progressData.units.find(u => u.don_vi === unitName);
 
   // Tính lũy kế theo ngày cho biểu đồ
   const cumulativeByDate: Record<string, number> = {};

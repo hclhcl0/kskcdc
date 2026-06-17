@@ -327,3 +327,80 @@ export async function getProgressDashboard(): Promise<ProgressDashboard> {
 
   return { units, systemOverallPct, unitsWith0Reports, unitsNoBenchmark, systemGroupStats };
 }
+
+export const getReportsByUnit = cache(async (don_vi: string): Promise<HealthReport[]> => {
+  const reports = await prisma.healthReport.findMany({
+    where: { don_vi },
+    orderBy: { ngay_kham: 'asc' },
+    include: { details: true }
+  });
+  return reports.map(mapPrismaReport);
+});
+
+export async function getUnitProgress(don_vi: string): Promise<UnitProgress | null> {
+  const [reports, benchmark, groups, acc] = await Promise.all([
+    prisma.healthReport.findMany({
+      where: { don_vi },
+      include: { details: true }
+    }),
+    prisma.benchmark.findUnique({
+      where: { don_vi },
+      include: { details: true }
+    }),
+    prisma.demographicGroup.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'asc' }
+    }),
+    prisma.account.findFirst({
+      where: { displayName: don_vi, role: 'unit' }
+    })
+  ]);
+
+  const achievedMap: Record<string, number> = {};
+  let reportCount = 0;
+  let lastDate = '';
+  const reportDates = new Set<string>();
+
+  for (const r of reports) {
+    for (const d of r.details) {
+      achievedMap[d.groupKey] = (achievedMap[d.groupKey] || 0) + d.count;
+    }
+    reportCount++;
+    if (r.ngay_kham > lastDate) lastDate = r.ngay_kham;
+    reportDates.add(r.ngay_kham);
+  }
+
+  const unitGroups = groups.filter(g => g.isGlobal || g.appliedUnits.includes(don_vi));
+
+  const stats: StatProgress[] = unitGroups.map((g) => {
+    const achieved = achievedMap[g.key] ?? 0;
+    const targetData = benchmark?.details.find(d => d.groupKey === g.key);
+    let target = targetData ? targetData.target : null;
+    let pct: number | null = null;
+    
+    if (g.hasNoBenchmark) {
+      target = achieved;
+      pct = achieved > 0 ? 100 : null;
+    } else if (target !== null && target > 0) {
+      pct = Math.round((achieved / target) * 100);
+    }
+    
+    return { key: g.key, label: g.name, icon: g.icon || '', achieved, target, pct, hasNoBenchmark: g.hasNoBenchmark };
+  });
+
+  const validStats = stats.filter((s) => s.pct !== null);
+  const overallPct = validStats.length > 0
+    ? Math.round(validStats.reduce((sum, s) => sum + (s.pct ?? 0), 0) / validStats.length)
+    : null;
+
+  return {
+    don_vi: don_vi,
+    co_so_y_te: acc?.facilityName ?? UNIT_TO_FACILITY[don_vi] ?? '',
+    reportCount,
+    lastReportDate: lastDate,
+    reportDates: Array.from(reportDates),
+    stats,
+    overallPct,
+  };
+}
+
