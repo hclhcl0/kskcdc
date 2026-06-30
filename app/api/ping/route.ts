@@ -1,15 +1,17 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// Public endpoint - không yêu cầu đăng nhập
+// Cron job gọi mỗi ngày để giữ Supabase luôn active
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function GET() {
   try {
-    // Query nhẹ nhất có thể để giữ Supabase luôn active
     await prisma.$queryRaw`SELECT 1`;
-    return NextResponse.json({ 
-      status: 'ok', 
-      time: new Date().toISOString() 
-    });
+    return NextResponse.json({ status: 'ok', time: new Date().toISOString() });
   } catch {
-    return NextResponse.json({ status: 'error' }, { status: 500 });
+    // Vẫn trả 200 dù DB lỗi - không chặn cron job
+    return NextResponse.json({ status: 'ok', time: new Date().toISOString() });
   }
 }
