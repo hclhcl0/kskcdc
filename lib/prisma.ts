@@ -17,8 +17,8 @@ function buildPoolConfig() {
 
   return {
     connectionString: cleanUrl,
-    max: 10,
-    idleTimeoutMillis: 60000,
+    max: process.env.VERCEL ? 1 : 5,
+    idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
     // Supabase pooler uses self-signed cert — must disable verification
     ssl: isSupabase ? { rejectUnauthorized: false } : undefined,
